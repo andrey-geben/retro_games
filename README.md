@@ -1,5 +1,8 @@
 # RETRO GAMES
 
+[![CI](https://github.com/andrey-geben/retro_games/actions/workflows/ci.yml/badge.svg)](https://github.com/andrey-geben/retro_games/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 Библиотека старых DOS-игр, которые запускаются **прямо в браузере**, и конвертер
 ретро-игр в автономные **`.EXE`** и **`.APK`**. Без аккаунтов, регистрации, тарифов
 и подписок: открыл сайт — играешь или собираешь файл.
@@ -9,7 +12,19 @@ Flask + SQLite  →  каталог игр, загрузка, бандлы .jsdo
 Браузер         →  js-dos (DOSBox WASM), сохранения в OPFS браузера
 ```
 
-![Библиотека игр](static/img/library-shot.png)
+## Скриншоты
+
+| Главная | Библиотека |
+|---|---|
+| ![Главная](docs/screenshots/landing.jpg) | ![Библиотека](docs/screenshots/library.jpg) |
+
+| Запуск в «телевизоре» | Приложения для Android |
+|---|---|
+| ![Модалка-телевизор](docs/screenshots/modal.jpg) | ![Приложения](docs/screenshots/apps.jpg) |
+
+| Админка (только локально) |
+|---|
+| ![Админка](docs/screenshots/admin.jpg) |
 
 ## Что умеет
 
@@ -149,6 +164,19 @@ python app.py --fix-bundles                :: добавить русскую к
 Ключи `--admin-user/--admin-password/--reset-admin/--check-admin/--list-users`
 остались от версии с авторизацией и в простом режиме не используются.
 
+## Разработка и тесты
+
+```bat
+python -m pip install pytest ruff
+ruff check .
+pytest -q
+```
+
+CI (GitHub Actions, `.github/workflows/ci.yml`) на каждый push и pull request:
+линтер `ruff`, проверка синтаксиса `compileall` и smoke-тесты Flask-приложения
+(главная, библиотека, загрузка, приложения, манифест, service worker, редиректы
+удалённых страниц, локальная админка).
+
 ## Данные
 
 ```
@@ -181,3 +209,11 @@ data/
 загружайте только то, что вы вправе распространять. Для публичного размещения
 библиотеки нужен собственный контент или свободные игры (freeware/abandonware
 по лицензии).
+
+## Лицензия
+
+Код проекта — **MIT**, см. [LICENSE](LICENSE). © 2026 Andrey Geben.
+
+Сторонние компоненты распространяются по своим лицензиям: js-dos — MIT,
+DOSBox/DOSBox-X и DOSBox Staging — GPL, шрифты Unbounded/Exo 2/Orbitron/Chakra Petch —
+SIL OFL 1.1. Игры в библиотеке лицензией проекта не покрываются.

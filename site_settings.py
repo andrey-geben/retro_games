@@ -107,7 +107,6 @@ def load() -> dict[str, Any]:
     data["allow_windows"] = bool(data.get("allow_windows", True))
     data["scan_uploads"] = bool(data.get("scan_uploads", True))
     data["maintenance"] = bool(data.get("maintenance", False))
-    theme = "tv"
     data["theme"] = "tv"
     data["public_url"] = str(data.get("public_url") or "").strip()[:200]
 

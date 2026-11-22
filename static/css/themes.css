@@ -2269,3 +2269,12 @@ body[data-theme="tv"]::before {
   background: radial-gradient(78% 62% at 50% 46%, transparent 56%, rgba(0, 0, 0, .42) 100%);
   mix-blend-mode: multiply;
 }
+
+/* читаемость героя на голубом экране */
+body.landing[data-theme="tv"] .hero-badge {
+  color: #04303f !important;
+  background: rgba(255, 255, 255, .55) !important;
+  border: 2px solid #0a607c !important;
+}
+body.landing[data-theme="tv"] .hero-lead { color: #063a48 !important; }
+body.landing[data-theme="tv"] .hero-stats span { color: #06404f !important; }

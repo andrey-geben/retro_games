@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Установка зависимостей
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pytest ruff
+
+      - name: Линтер
+        run: ruff check .
+
+      - name: Синтаксис
+        run: python -m compileall -q app.py auth.py library.py bundler.py builder.py scanner.py site_settings.py android.py probe.py
+
+      - name: Тесты
+        run: pytest -q

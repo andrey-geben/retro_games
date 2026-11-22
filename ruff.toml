@@ -1,0 +1,13 @@
+line-length = 120
+target-version = "py312"
+
+[lint]
+select = ["E9", "F"]
+ignore = ["F541"]
+exclude = [
+  "static/vendor",
+  "data",
+  "games",
+  ".ctl",
+  "builder/dosbox",
+]
