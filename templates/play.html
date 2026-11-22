@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block title %}{{ game.title }} — {{ site.title }}{% endblock %}
+{% block body_class %}is-player{% if request.args.get('embed') %} is-embed{% endif %}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='vendor/js-dos/js-dos.css') }}?v={{ build }}">
+{% endblock %}
+
+{% block content %}
+<div class="player">
+  {% if not request.args.get('embed') %}
+  <div class="player-bar">
+    <a class="btn ghost small" href="{{ url_for('index') }}">← Библиотека</a>
+    <h1 class="player-title">{{ game.title }}</h1>
+    <div class="player-tools">
+      <a class="btn ghost small" href="{{ url_for('exe_page', game_id=game.id) }}">Скачать .exe</a>
+      <form method="post" action="{{ url_for('cover_upload', game_id=game.id) }}"
+            enctype="multipart/form-data" class="cover-form">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <label class="btn ghost small">
+          Обложка
+          <input type="file" name="cover" accept="image/*" onchange="this.form.submit()" hidden>
+        </label>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if game.description and not request.args.get('embed') %}
+  <p class="player-desc">{{ game.description }}</p>
+  {% endif %}
+
+  <div id="dos" class="dos-host">
+    <div class="dos-start" id="dos-start">
+      <button class="btn primary big" id="dos-start-btn" type="button">▶ Запустить игру</button>
+      <p class="meta" id="dos-start-hint">Эмулятор загрузится по нажатию</p>
+    </div>
+  </div>
+
+  <p class="player-status" id="dos-status" aria-live="polite">Готов к запуску</p>
+
+  <div class="player-error" id="player-error" hidden>
+    <p>Не удалось открыть бандл игры. Обычно виноват старый кэш js-dos в браузере.</p>
+    <button class="btn primary" type="button" id="reset-game-cache">Сбросить кэш игр и перезагрузить</button>
+  </div>
+
+  {% if not request.args.get('embed') %}
+  <p class="player-hint storage-warn" id="storage-warn" hidden>
+    Браузер запретил хранилище js-dos: сохранения отключены. Откройте сайт по
+    <code>https://</code> или через <code>http://localhost</code>.
+  </p>
+  <p class="player-hint">
+    <code>Alt+Enter</code> — полный экран · <code>F11</code> в браузере — тоже · сохранения хранятся в браузере
+  </p>
+  {% endif %}
+</div>
+
+<script src="{{ url_for('static', filename='vendor/js-dos/js-dos.js') }}?v={{ build }}"></script>
+<script>
+(function () {
+  const host = document.getElementById('dos');
+  const startScreen = document.getElementById('dos-start');
+  const startButton = document.getElementById('dos-start-btn');
+  const statusEl = document.getElementById('dos-status');
+  const gameUrl = "{{ url_for('bundle_file', game_id=game.id, version=bundle_version) }}";
+  let started = false;
+  let player = null;
+
+  function say(text, kind) {
+    statusEl.textContent = text;
+    statusEl.className = 'player-status' + (kind ? ' ' + kind : '');
+    console.log('[retro]', text);
+  }
+
+  window.addEventListener('error', function (event) {
+    say('Ошибка страницы: ' + event.message, 'err');
+  });
+  window.addEventListener('unhandledrejection', function (event) {
+    const reason = event.reason && (event.reason.message || event.reason);
+    say('Ошибка: ' + reason, 'err');
+  });
+
+  
+  function showPlayerError() {
+    var box = document.getElementById('player-error');
+    if (box) { box.hidden = false; }
+  }
+
+  async function resetGameCache() {
+    try {
+      if (window.indexedDB && indexedDB.databases) {
+        var dbs = await indexedDB.databases();
+        await Promise.all(dbs.map(function (info) {
+          return new Promise(function (resolve) {
+            var request = indexedDB.deleteDatabase(info.name);
+            request.onsuccess = request.onerror = request.onblocked = function () { resolve(); };
+          });
+        }));
+      }
+      if (window.caches) {
+        var keys = await caches.keys();
+        await Promise.all(keys.map(function (key) { return caches.delete(key); }));
+      }
+      try { localStorage.clear(); } catch (e) {}
+      try { sessionStorage.clear(); } catch (e) {}
+    } catch (e) {}
+    window.location.reload();
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var storageWarn = document.getElementById('storage-warn');
+    if (storageWarn && !window.__jsdosStorageOk) { storageWarn.hidden = false; }
+    var button = document.getElementById('reset-game-cache');
+    if (button) { button.addEventListener('click', resetGameCache); }
+    var host = document.getElementById('dos');
+    setInterval(function () {
+      if (host && /Broken bundle|not found/i.test(host.textContent || '')) {
+        showPlayerError();
+      }
+    }, 700);
+  });
+
+function startGame() {
+    if (started) return;
+    started = true;
+    startButton.disabled = true;
+    startButton.textContent = 'Запускаем…';
+
+    if (typeof Dos !== 'function') {
+      say('js-dos не загрузился: проверьте static/vendor/js-dos/js-dos.js', 'err');
+      startButton.disabled = false;
+      startButton.textContent = '↻ Попробовать снова';
+      return;
+    }
+
+    startScreen.remove();
+    say('Создаём эмулятор…');
+
+    try {
+      player = Dos(host, {
+        url: gameUrl,
+        pathPrefix: "{{ url_for('static', filename='vendor/js-dos/emulators/') }}",
+        theme: 'dark',
+        lang: 'ru',
+        backend: '{{ game.backend or 'dosbox' }}',
+        backendLocked: true,
+        workerThread: false,
+        autoStart: true,
+        autoSave: !!window.__jsdosStorageOk,
+        mouseCapture: false,
+        mobileControls: true,
+        imageRendering: 'pixelated',
+        renderAspect: '4/3',
+        onEvent: function (event) {
+          console.log('[retro] js-dos event:', event);
+          say('js-dos: ' + event);
+          if (event === 'emu-ready' || event === 'ci-ready' || event === 'bundle-ready') {
+            say('Игра запущена', 'ok');
+          }
+        }
+      });
+      window.__retroPlayer = player;
+      setTimeout(function () {
+        const canvas = host.querySelector('canvas');
+        if (canvas) {
+          canvas.tabIndex = 0;
+          canvas.focus();
+        }
+      }, 600);
+    } catch (error) {
+      say('Не удалось создать плеер: ' + error, 'err');
+      startButton.disabled = false;
+    }
+
+    const observer = new MutationObserver(function () {
+      if (host.querySelector('canvas')) {
+          observer.disconnect();
+      }
+    });
+    observer.observe(host, { childList: true, subtree: true });
+
+    setTimeout(function () {
+      if (!host.querySelector('canvas')) {
+        say('Эмулятор не показал экран за 20 секунд — откройте F12 и пришлите ошибки', 'err');
+      }
+    }, 20000);
+  }
+
+  startButton.addEventListener('click', startGame);
+})();
+</script>
+{% endblock %}
+

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} — {{ site.title }}{% endblock %}
+
+{% block content %}
+<div class="error-screen">
+  <div class="code">{{ code }}</div>
+  <h1>{{ message }}</h1>
+  <p class="muted">Похоже, картридж не вставлен до щелчка.</p>
+  <a class="btn primary big" href="{{ url_for('index') }}">▶ В библиотеку</a>
+</div>
+{% endblock %}

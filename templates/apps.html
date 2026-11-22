@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Приложения — {{ site.title }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>Приложения</h1>
+  <p class="sub">Как установить ретро-игры на телефон и компьютер: браузер, PWA и APK для Android.</p>
+</section>
+
+<div class="apps-grid">
+  <article class="about-card">
+    <h2>1. Windows — .EXE</h2>
+    <p>Автономный файл: игра, DOSBox Staging и лаунчер внутри. Ничего устанавливать не нужно —
+       запустили двойным кликом и играете.</p>
+    <p class="muted">Скачивается со страницы игры: «Скачать .EXE». Сборка бесплатна.</p>
+  </article>
+
+  <article class="about-card">
+    <h2>2. Android / iPhone — установка сайта (PWA)</h2>
+    <p>Сайт можно добавить на главный экран как приложение: иконка, полноэкранный режим,
+       офлайн-кэш оболочки и игр.</p>
+    <p>
+      <button class="btn primary" type="button" id="install-pwa">Установить приложение</button>
+    </p>
+    <ul class="about-list">
+      <li><b>Android (Chrome):</b> меню ⋮ → «Установить приложение» или «Добавить на главный экран».</li>
+      <li><b>iPhone (Safari):</b> кнопка «Поделиться» → «На экран Домой».</li>
+      <li>Работает без APK и без магазина приложений.</li>
+    </ul>
+    <p class="muted" id="pwa-status"></p>
+  </article>
+
+  <article class="about-card">
+    <h2>3. Android — универсальный APK-плеер</h2>
+    {% if android_ready %}
+      <p>Отдельное приложение <b>Retro Games Player</b>: открывает веб-плеер на весь экран,
+         без адресной строки браузера. Один APK — вся библиотека.</p>
+      <p><a class="btn primary" href="{{ url_for('player_apk') }}">Скачать APK-плеер</a></p>
+      <ul class="about-list">
+        <li>Скачайте файл на телефон и откройте его.</li>
+        <li>Разрешите установку из этого источника (Android спросит один раз).</li>
+        <li>Приложение откроет <code>{{ base_url }}/library</code> — сайт должен быть доступен с телефона.</li>
+      </ul>
+      <p class="muted">Если адрес в приложении не тот — задайте «Публичный адрес сайта» в настройках админки.</p>
+    {% else %}
+      <p>На этом сервере не установлен Android SDK, поэтому APK пока не собирается.</p>
+      <p class="muted">Нужны Android SDK (build-tools, platform) и JDK 17 — после установки кнопка появится здесь.</p>
+    {% endif %}
+  </article>
+
+  <article class="about-card">
+    <h2>4. Android — APK на каждую игру</h2>
+    {% if android_ready %}
+      <p>Как с .EXE, только для Android: отдельный APK, который сразу открывает конкретную игру
+         на весь экран. Кнопка «Скачать APK» есть на странице каждой игры.</p>
+      <ul class="about-list">
+        <li>Сборка идёт на сервере, файл весит десятки килобайт.</li>
+        <li>Нужен доступ к сайту с телефона (тот же публичный адрес).</li>
+        <li>Бесплатно, как и сборка .EXE.</li>
+      </ul>
+    {% else %}
+      <p>APK на каждую игру собирается тем же Android SDK — пока он не установлен, кнопка недоступна.</p>
+    {% endif %}
+  </article>
+
+  <article class="about-card">
+    <h2>5. iPhone и iPad</h2>
+    <p>Отдельный файл для iOS (`.ipa`) требует Mac, сертификат Apple и подпись — это небыстро и
+       не бесплатно. Зато сайт ставится на домашний экран через Safari (см. пункт 2) и работает
+       как приложение.</p>
+  </article>
+
+  <article class="about-card">
+    <h2>Состояние сервера</h2>
+    <ul class="about-list">
+      <li>Android SDK: {% if android_ready %}<span class="tag ok">готов</span>{% else %}<span class="tag warn">не установлен</span>{% endif %}</li>
+      <li>Публичный адрес: <code>{{ base_url }}</code></li>
+      <li>PWA: манифест и service worker активны</li>
+      <li>Версия сборки: <code>{{ build }}</code></li>
+    </ul>
+    {% if is_admin and not public_url %}
+      <p class="muted">Админ: укажите «Публичный адрес сайта» в настройках — APK будут открывать его.</p>
+    {% endif %}
+  </article>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var button = document.getElementById('install-pwa');
+  var status = document.getElementById('pwa-status');
+  var prompt = window.__pwaPrompt;
+  function refresh() {
+    prompt = window.__pwaPrompt;
+    if (status) {
+      status.textContent = prompt
+        ? 'Можно установить: нажмите кнопку выше.'
+        : 'Если кнопка неактивна — установите через меню браузера (⋮ → Установить приложение).';
+    }
+  }
+  document.addEventListener('pwa-ready', refresh);
+  if (button) {
+    button.addEventListener('click', function () {
+      if (!window.__pwaPrompt) { refresh(); return; }
+      window.__pwaPrompt.prompt();
+      window.__pwaPrompt.userChoice.finally(function () {
+        window.__pwaPrompt = null;
+        refresh();
+      });
+    });
+  }
+  refresh();
+})();
+</script>
+{% endblock %}

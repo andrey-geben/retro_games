@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Профиль — {{ site.title }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>ПРОФИЛЬ</h1>
+  <p class="sub">{{ user.username }} · {{ user.email }}</p>
+</section>
+
+{% if user.must_change %}
+<div class="flash">
+  <div class="flash-item error">
+    Вы вошли с паролем, который выдала система. Придумайте свой — до этого доступны
+    только эта страница и выход.
+  </div>
+</div>
+{% endif %}
+
+<div class="panel">
+  <p class="meta">
+    Роль: <b>{{ user.role }}</b> ·
+    почта: {% if user.verified %}<span class="tag ok">подтверждена</span>{% else %}<span class="tag warn">не подтверждена</span>{% endif %}
+    {% if user.last_login %}· последний вход: {{ user.last_login.replace('T', ' ') }}{% endif %}
+  </p>
+</div>
+
+{% if errors %}
+  <div class="flash">
+    {% for error in errors %}<div class="flash-item error">{{ error }}</div>{% endfor %}
+  </div>
+{% endif %}
+
+<form class="upload-form" method="post" action="{{ url_for('profile') }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <h2 class="hint-title">Смена пароля</h2>
+
+  <label class="field">
+    <span>Текущий пароль</span>
+    <input type="password" name="current" required autocomplete="current-password">
+  </label>
+  <label class="field">
+    <span>Новый пароль</span>
+    <input type="password" name="password" required autocomplete="new-password">
+    <span class="field-hint">минимум 8 символов</span>
+  </label>
+  <label class="field">
+    <span>Новый пароль ещё раз</span>
+    <input type="password" name="password2" required autocomplete="new-password">
+  </label>
+
+  <button class="btn primary big" type="submit">Сохранить пароль</button>
+</form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Журнал — {{ site.title }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>ЖУРНАЛ СОБЫТИЙ</h1>
+  <p class="sub">data/logs/app.log · {{ log_size }} · показано строк: {{ lines|length }}</p>
+</section>
+
+<form class="upload-form" method="get" action="{{ url_for('admin_logs') }}">
+  <div class="row">
+    <label class="field">
+      <span>Фильтр</span>
+      <input type="text" name="q" value="{{ query }}" placeholder="LOGIN, BUILD, ошибка, имя пользователя…">
+    </label>
+    <div class="field" style="align-self:end">
+      <button class="btn primary" type="submit">Найти</button>
+    </div>
+  </div>
+</form>
+
+<pre class="logs">{% for line in lines %}{% if 'ERROR' in line or 'FAIL' in line %}<span class="log-err">{{ line }}</span>{% elif 'WARNING' in line %}<span class="log-warn">{{ line }}</span>{% else %}{{ line }}{% endif %}{% endfor %}</pre>
+
+<p class="muted">Журнал ротируется: 2 МБ × 4 файла. Ошибки и предупреждения подсвечены.</p>
+{% endblock %}

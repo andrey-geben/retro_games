@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block title %}Библиотека — {{ site.title }}{% endblock %}
+
+{% block body_class %}has-rails{% endblock %}
+
+{% block head %}
+<style>
+/* карусель: дублируем в HTML, чтобы не зависеть от кэша style.css */
+.carousel { position: relative; }
+.grid {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 2px 2px 10px;
+  scrollbar-width: none;
+}
+.grid::-webkit-scrollbar { display: none; }
+.grid > .card { flex: 0 0 calc((100% - 48px) / 4) !important; width: auto !important; scroll-snap-align: start; min-width: 0; }
+.car-btn {
+  position: absolute; top: 42%; z-index: 5;
+  width: 44px; height: 64px; display: flex; align-items: center; justify-content: center;
+  font-size: 34px; line-height: 1; color: #fff4e2; background: #a31432;
+  border: 3px solid #6d0a1c; box-shadow: 4px 4px 0 #6d0a1c; cursor: pointer;
+}
+.car-btn:disabled { opacity: 0.35; cursor: default; }
+.car-prev { left: -34px; }
+.car-next { right: -34px; }
+@media (max-width: 1200px) { .grid > .card { flex-basis: calc((100% - 32px) / 3) !important; } }
+@media (max-width: 900px) { .grid > .card { flex-basis: calc((100% - 16px) / 2) !important; } }
+@media (max-width: 560px) { .grid > .card { flex-basis: 100% !important; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>Библиотека игр</h1>
+  <p class="sub">Загрузите архивы с играми — они останутся здесь и будут запускаться в браузере.</p>
+</section>
+
+{% if not games and not drafts %}
+  <div class="empty">
+    <div class="empty-icon">💾</div>
+    <h2>Пока пусто</h2>
+    <p>Первая игра появится здесь после загрузки архива с файлами DOS-игры.</p>
+    <a class="btn primary big" href="{{ url_for('upload_page') }}">Загрузить первую игру</a>
+  </div>
+{% endif %}
+
+{% if games %}
+{% set half = (cartridges|length + 1) // 2 %}
+<div class="library-layout">
+  <aside class="rail rail--left">
+    <div class="rail-pad">{% include 'partials/famicom-pad.html' %}</div>
+    <div class="rail-rack">
+      {% for game in cartridges[:half] %}
+      <a class="cart" data-play="{{ url_for('play', game_id=game.id) }}" data-game="{{ game.id }}"
+         data-backend="{{ game.backend or 'dosbox' }}"
+         data-bundle="{{ bundle_url(game) }}" data-title="{{ game.title }}"
+         href="{{ url_for('play', game_id=game.id) }}" title="{{ game.title }}">
+        <span class="cart-label">{{ game.title }}</span>
+        <span class="cart-meta">{{ game.bundle_size|human_size }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </aside>
+
+  <div class="library-main">
+    <h2 class="section-title">Популярные игры</h2>
+    <div class="carousel" data-carousel>
+      <button class="car-btn car-prev" type="button" aria-label="Прокрутить назад">&#8249;</button>
+      <div class="grid">
+      {% for game in popular %}
+      <article class="card">
+        <a class="cover-link" data-play="{{ url_for('play', game_id=game.id) }}" data-game="{{ game.id }}"
+          data-backend="{{ game.backend or 'dosbox' }}"
+           data-bundle="{{ bundle_url(game) }}" data-title="{{ game.title }}"
+           href="{{ url_for('play', game_id=game.id) }}" title="Играть в «{{ game.title }}»">
+          {% if game.cover %}
+            <img class="cover" src="{{ url_for('cover_file', game_id=game.id) }}" alt="{{ game.title }}">
+          {% else %}
+            <div class="cover placeholder"><span>{{ game.title[:2]|upper }}</span></div>
+          {% endif %}
+          <span class="play-badge">▶</span>
+        </a>
+        <div class="card-body">
+          <h3 class="card-title">
+            <a href="{{ url_for('game_page', game_id=game.id) }}">{{ game.title }}</a>
+            {% if game.play_status == 'exe_only' %}<span class="badge-exe">только .EXE</span>{% endif %}
+          </h3>
+          <div class="actions">
+            {% if game.play_status == 'exe_only' %}
+            <a class="btn primary" href="{{ url_for('exe_page', game_id=game.id) }}">Скачать .EXE</a>
+            {% else %}
+            <a class="btn primary" data-play="{{ url_for('play', game_id=game.id) }}" data-game="{{ game.id }}"
+               data-backend="{{ game.backend or 'dosbox' }}"
+               data-bundle="{{ bundle_url(game) }}" data-title="{{ game.title }}"
+               href="{{ url_for('play', game_id=game.id) }}">Играть</a>
+            {% endif %}
+            <a class="btn ghost" href="{{ url_for('game_page', game_id=game.id) }}">Подробнее</a>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+      </div>
+      <button class="car-btn car-next" type="button" aria-label="Прокрутить вперёд">&#8250;</button>
+    </div>
+  </div>
+
+  <aside class="rail rail--right">
+    <div class="rail-pad">{% include 'partials/famicom-pad.html' %}</div>
+    <div class="rail-rack">
+      {% for game in cartridges[half:] %}
+      <a class="cart" data-play="{{ url_for('play', game_id=game.id) }}" data-game="{{ game.id }}"
+         data-bundle="{{ bundle_url(game) }}" data-title="{{ game.title }}"
+         href="{{ url_for('play', game_id=game.id) }}" title="{{ game.title }}">
+        <span class="cart-label">{{ game.title }}</span>
+        <span class="cart-meta">{{ game.bundle_size|human_size }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </aside>
+</div>
+{% endif %}
+{% if drafts %}
+<section class="drafts">
+  <div class="drafts-head">
+    <h2>Незаконченные загрузки</h2>
+    {% if is_admin and drafts %}
+    <form method="post" action="{{ url_for('clear_drafts') }}"
+          onsubmit="return confirm('Удалить все незаконченные загрузки?')">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <button class="btn ghost small" type="submit">Удалить все</button>
+    </form>
+    {% endif %}
+  </div>
+  <ul>
+    {% for draft in drafts %}
+    <li>
+      <a href="{{ url_for('setup_game', game_id=draft.id) }}">{{ draft.title }}</a>
+      <span class="meta">— выберите файл запуска</span>
+      {% if is_admin %}
+      <form method="post" action="{{ url_for('delete_game', game_id=draft.id) }}"
+            onsubmit="return confirm('Удалить незаконченную загрузку «{{ draft.title }}»?')">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <button class="btn ghost small" type="submit">Удалить</button>
+      </form>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+{% endblock %}
+
+{% block modals %}{% include 'partials/play-modal.html' %}{% endblock %}
+
+{% block scripts %}<script>
+(function () {
+  document.querySelectorAll('[data-carousel]').forEach(function (root) {
+    if (root.dataset.carouselInit === '1') { return; }
+    root.dataset.carouselInit = '1';
+    var track = root.querySelector('.grid');
+    var prev = root.querySelector('.car-prev');
+    var next = root.querySelector('.car-next');
+    if (!track || !prev || !next) { return; }
+    function step() {
+      var card = track.querySelector('.card');
+      if (!card) { return track.clientWidth; }
+      var gap = parseFloat(getComputedStyle(track).columnGap || '16') || 16;
+      return card.getBoundingClientRect().width + gap;
+    }
+    function update() {
+      var max = track.scrollWidth - track.clientWidth - 2;
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = max <= 0 || track.scrollLeft >= max;
+    }
+    prev.addEventListener('click', function () { track.scrollBy({ left: -step() * 2, behavior: 'smooth' }); });
+    next.addEventListener('click', function () { track.scrollBy({ left: step() * 2, behavior: 'smooth' }); });
+    track.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  });
+})();
+</script>
+
+<script src="{{ url_for('static', filename='js/library.js') }}?v={{ build }}"></script>
+{% endblock %}

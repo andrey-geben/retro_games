@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Админка — {{ site.title }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>ПАНЕЛЬ АДМИНИСТРАТОРА</h1>
+  <p class="sub">Пользователи, настройки сайта и журнал событий</p>
+</section>
+
+<div class="admin-grid">
+  <div class="stat"><div class="stat-value">{{ stats.users }}</div><div class="stat-label">пользователей</div></div>
+  <div class="stat"><div class="stat-value">{{ stats.admins }}</div><div class="stat-label">админов</div></div>
+  <div class="stat"><div class="stat-value">{{ stats.games }}</div><div class="stat-label">игр в библиотеке</div></div>
+  <div class="stat"><div class="stat-value">{{ stats.drafts }}</div><div class="stat-label">черновиков</div></div>
+  <div class="stat"><div class="stat-value">{{ stats.builds }}</div><div class="stat-label">exe-сборок</div></div>
+  <div class="stat"><div class="stat-value">{{ stats.storage }}</div><div class="stat-label">занято играми</div></div>
+</div>
+
+<section class="hint">
+  <h2>Разделы</h2>
+  <ul class="admin-links">
+    <li><a class="btn" href="{{ url_for('admin_users') }}">Пользователи</a></li>
+    <li><a class="btn" href="{{ url_for('admin_site') }}">Настройки сайта</a></li>
+    <li><a class="btn" href="{{ url_for('admin_landing') }}">Контент главной</a></li>
+    <li><a class="btn" href="{{ url_for('admin_billing') }}">Оплата</a></li>
+    <li><a class="btn" href="{{ url_for('admin_pricing') }}">Тарифы</a></li>
+    <li><a class="btn" href="{{ url_for('admin_logs') }}">Журнал ({{ stats.log_size }})</a></li>
+    <li><a class="btn" href="{{ url_for('settings_page') }}">Адрес и порт сервера</a></li>
+  </ul>
+</section>
+
+<section class="hint">
+  <h2>Состояние</h2>
+  <ul>
+    <li>Регистрация: {% if site.registration_open %}<span class="tag ok">открыта</span>{% else %}<span class="tag warn">закрыта</span>{% endif %}</li>
+    <li>Подтверждение почты: {% if site.require_email %}<span class="tag ok">включено</span>{% else %}<span class="tag warn">выключено</span>{% endif %}</li>
+    <li>SMTP: {% if smtp_configured %}<span class="tag ok">настроен</span>{% else %}<span class="tag warn">не настроен</span>{% endif %}</li>
+    <li>Режим обслуживания: {% if site.maintenance %}<span class="tag warn">включён</span>{% else %}<span class="tag ok">выключен</span>{% endif %}</li>
+  </ul>
+</section>
+{% endblock %}

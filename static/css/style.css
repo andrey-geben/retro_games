@@ -1,0 +1,2050 @@
+﻿/* ==========================================================================
+   RETRO GAMES — оформление в духе консолей Dandy / Sega Mega Drive
+   ========================================================================== */
+
+@import url("../fonts/fonts.css");
+
+:root {
+  --bg: #120720;
+  --bg-2: #1b0b30;
+  --panel: #25123d;
+  --panel-2: #2f1750;
+  --ink: #f6ecff;
+  --muted: #a58fc8;
+  --cyan: #4de2ff;
+  --magenta: #ff4fa3;
+  --yellow: #ffd23f;
+  --green: #7bff9a;
+  --red: #ff5c5c;
+  --line: #4a2c73;
+  --shadow: #05020b;
+  --pixel: "Press Start 2P", "Handjet", monospace;
+  --body: "Handjet", "VT323", "Segoe UI", monospace;
+  --mono: "VT323", "Cascadia Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { scrollbar-color: var(--magenta) var(--bg); }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 21px;
+  line-height: 1.35;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 50% -20%, rgba(255, 79, 163, 0.22), transparent 55%),
+    radial-gradient(circle at 10% 110%, rgba(77, 226, 255, 0.16), transparent 45%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 4px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* CRT-эффект: скан-линии и виньетка */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 90;
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0 2px, transparent 2px 4px);
+  mix-blend-mode: multiply;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 91;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+a { color: var(--cyan); text-decoration: none; }
+a:hover { color: var(--yellow); }
+
+code {
+  font-family: var(--mono);
+  font-size: 1.05em;
+  color: var(--yellow);
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid var(--line);
+  padding: 0 5px;
+}
+
+/* ---------------------------------- джойстики --------------------------- */
+
+.joystick {
+  position: fixed;
+  top: 50%;
+  width: 252px;
+  pointer-events: none;
+  z-index: 80;
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55));
+  opacity: 0.96;
+}
+.joystick--left { left: 2px; transform: translateY(-42%) rotate(-10deg); }
+.joystick--right { right: 2px; transform: translateY(-42%) rotate(10deg); }
+
+@media (max-width: 1560px) { .joystick { display: none; } }
+
+/* ---------------------------------- шапка ------------------------------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 26px;
+  border-bottom: 4px solid var(--line);
+  background: linear-gradient(180deg, #1d0a33, #150826);
+  box-shadow: 0 6px 0 var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 60;
+}
+
+.brand {
+  font-family: var(--pixel);
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: var(--yellow);
+  text-shadow: 3px 3px 0 var(--magenta), 6px 6px 0 rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+}
+.brand span { color: var(--cyan); }
+.brand:hover { color: var(--yellow); }
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.nav a {
+  font-family: var(--body);
+  font-size: 19px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 6px 10px;
+  border-bottom: 3px solid transparent;
+}
+.nav a:hover { color: var(--ink); border-bottom-color: var(--magenta); }
+
+.nav .nav-cta {
+  color: #1a0b00;
+  background: var(--yellow);
+  border: 3px solid #8a5d00;
+  box-shadow: 4px 4px 0 var(--shadow);
+  padding: 8px 12px;
+}
+.nav .nav-cta:hover { background: #ffe07a; color: #1a0b00; }
+
+.user-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 3px solid var(--line);
+  background: rgba(0, 0, 0, 0.35);
+  font-size: 18px;
+  color: var(--muted);
+}
+.user-chip b { color: var(--ink); font-weight: 400; }
+.role-badge {
+  font-family: var(--mono);
+  font-size: 15px;
+  text-transform: uppercase;
+  color: #0a1a10;
+  background: var(--green);
+  padding: 0 6px;
+}
+.role-badge.admin { background: var(--magenta); color: #22000f; }
+
+.logout-form { display: inline; }
+.logout-form button { all: unset; cursor: pointer; color: var(--muted); font-size: 18px; }
+.logout-form button:hover { color: var(--red); }
+
+/* ---------------------------------- контент ----------------------------- */
+
+.page {
+  flex: 1;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 30px 24px 60px;
+  position: relative;
+  z-index: 5;
+}
+
+.page-head { margin-bottom: 24px; }
+.page-head h1 {
+  margin: 0 0 8px;
+  font-family: var(--pixel);
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--ink);
+  text-shadow: 3px 3px 0 rgba(255, 79, 163, 0.55);
+}
+.page-head .sub { margin: 0; color: var(--muted); font-size: 19px; }
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 26px;
+  border-top: 4px solid var(--line);
+  background: #0e0419;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 17px;
+  z-index: 5;
+}
+
+/* ---------------------------------- сообщения --------------------------- */
+
+.flash { display: grid; gap: 10px; margin-bottom: 20px; }
+
+.flash-item {
+  padding: 12px 16px;
+  border: 3px solid var(--line);
+  background: var(--panel);
+  box-shadow: 4px 4px 0 var(--shadow);
+  font-size: 20px;
+}
+.flash-item.error { border-color: var(--red); background: rgba(255, 92, 92, 0.12); }
+.flash-item.ok { border-color: var(--green); background: rgba(123, 255, 154, 0.1); }
+
+/* ---------------------------------- сетка игр --------------------------- */
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.card {
+  width: 238px;
+  flex: 0 0 auto;
+  background: var(--panel);
+  border: 4px solid var(--line);
+  box-shadow: 6px 6px 0 var(--shadow);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.12s steps(2), box-shadow 0.12s steps(2);
+}
+.card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 9px 9px 0 var(--shadow);
+  border-color: var(--magenta);
+}
+
+.cover-link { position: relative; display: block; aspect-ratio: 2 / 3; background: #0a0413; overflow: hidden; }
+.cover { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(1.15) contrast(1.05); }
+
+.cover.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    repeating-linear-gradient(45deg, #241238 0 14px, #1b0b2c 14px 28px);
+}
+.cover.placeholder span {
+  font-family: var(--pixel);
+  font-size: 34px;
+  color: var(--cyan);
+  text-shadow: 3px 3px 0 var(--magenta);
+}
+
+.play-badge {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--magenta);
+  color: #1b0010;
+  border: 3px solid #7d0f45;
+  font-size: 16px;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+.cover-link:hover .play-badge { opacity: 1; }
+
+.card-body { padding: 14px 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.card-title {
+  margin: 0;
+  font-family: var(--body);
+  font-weight: 700;
+  font-size: 23px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.meta { margin: 0; color: var(--muted); font-family: var(--mono); font-size: 17px; }
+.actions { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+
+/* ---------------------------------- кнопки ------------------------------ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-family: var(--body);
+  font-size: 19px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--panel-2);
+  border: 3px solid var(--line);
+  box-shadow: 4px 4px 0 var(--shadow);
+  cursor: pointer;
+  transition: transform 0.08s steps(2), box-shadow 0.08s steps(2), background 0.1s;
+}
+.btn:hover { background: #3a1d61; color: var(--ink); }
+.btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--shadow); }
+.btn.primary { background: var(--yellow); color: #1c0d00; border-color: #8a5d00; }
+.btn.primary:hover { background: #ffe07a; }
+.btn.ghost { background: transparent; color: var(--muted); }
+.btn.ghost:hover { color: var(--ink); background: rgba(255, 255, 255, 0.06); }
+.btn.danger { background: transparent; border-color: var(--red); color: var(--red); }
+.btn.danger:hover { background: rgba(255, 92, 92, 0.15); }
+.btn.big { padding: 14px 26px; font-size: 21px; }
+.btn.small { padding: 6px 10px; font-size: 17px; }
+
+/* ---------------------------------- формы ------------------------------- */
+
+.field { display: grid; gap: 8px; font-size: 19px; color: var(--muted); }
+.field > span, .field > legend {
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 17px;
+}
+.field input[type=text], .field input[type=email], .field input[type=password],
+.field input[type=number], .field input[type=file], .field select, .field textarea {
+  padding: 10px 12px;
+  background: #0d0418;
+  color: var(--ink);
+  border: 3px solid var(--line);
+  font-family: var(--mono);
+  font-size: 21px;
+  outline: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(77, 226, 255, 0.2);
+}
+.field-hint { font-size: 16px; color: var(--muted); font-family: var(--mono); }
+fieldset.field { border: 3px solid var(--line); padding: 14px; margin: 0; }
+
+.upload-form, .setup-form, .auth-form { display: grid; gap: 18px; max-width: 640px; }
+.row { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; }
+
+/* ---------------------------------- блоки ------------------------------- */
+
+.panel, .hint, .empty {
+  background: var(--panel);
+  border: 4px solid var(--line);
+  box-shadow: 6px 6px 0 var(--shadow);
+  padding: 20px 22px;
+}
+.panel { margin-bottom: 18px; }
+.hint { margin-top: 30px; }
+.hint h2 {
+  margin: 0 0 12px;
+  font-family: var(--body);
+  font-size: 24px;
+  color: var(--cyan);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.hint ul { margin: 0 0 8px; padding-left: 22px; color: var(--muted); }
+.hint li { margin: 6px 0; }
+.muted { color: var(--muted); }
+
+.empty { text-align: center; padding: 56px 24px; }
+.empty-icon { font-size: 46px; }
+.empty h2 { margin: 10px 0 8px; font-family: var(--body); font-size: 28px; }
+.empty p { color: var(--muted); margin: 0 0 18px; }
+
+/* ---------------------------------- вход / регистрация ------------------ */
+
+.auth-wrap {
+  min-height: calc(100vh - 220px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.auth-console {
+  width: min(520px, 100%);
+  background: var(--panel);
+  border: 6px solid #3a1d61;
+  box-shadow: 0 0 0 4px var(--shadow), 10px 10px 0 var(--shadow),
+              0 0 40px rgba(255, 79, 163, 0.25);
+  padding: 26px 24px 24px;
+  position: relative;
+}
+.auth-console::before {
+  content: "● REC";
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--red);
+  animation: blink 1.4s steps(2) infinite;
+}
+.auth-console h1 {
+  margin: 0 0 6px;
+  font-family: var(--pixel);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--yellow);
+  text-shadow: 3px 3px 0 var(--magenta);
+}
+.auth-console .sub { color: var(--muted); margin: 0 0 18px; font-size: 19px; }
+.auth-form { max-width: none; }
+.auth-links { margin-top: 16px; font-size: 18px; color: var(--muted); display: grid; gap: 6px; }
+.auth-links a { color: var(--cyan); text-transform: uppercase; letter-spacing: 0.06em; }
+.cursor { animation: blink 1s steps(2) infinite; color: var(--green); }
+
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ---------------------------------- админка ----------------------------- */
+
+.admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.stat {
+  background: var(--panel);
+  border: 4px solid var(--line);
+  box-shadow: 5px 5px 0 var(--shadow);
+  padding: 16px 18px;
+}
+.stat-value { font-family: var(--pixel); font-size: 18px; color: var(--yellow); }
+.stat-label { color: var(--muted); font-size: 17px; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 8px; }
+
+table.table { width: 100%; border-collapse: collapse; font-size: 19px; }
+.table th, .table td {
+  padding: 10px 12px;
+  border: 2px solid var(--line);
+  text-align: left;
+  vertical-align: middle;
+}
+.table th {
+  background: #2b1550;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 17px;
+  font-weight: 400;
+}
+.table tr:nth-child(even) td { background: rgba(255, 255, 255, 0.02); }
+.table td form { display: inline; }
+.table .muted { font-family: var(--mono); }
+
+.logs {
+  margin: 0;
+  max-height: 62vh;
+  overflow: auto;
+  padding: 16px;
+  background: #04120a;
+  border: 4px solid #1d4d2c;
+  color: #8dffb0;
+  font-family: var(--mono);
+  font-size: 17px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6);
+}
+.log-warn { color: var(--yellow); }
+.log-err { color: var(--red); }
+
+/* ---------------------------------- импорт / сборки --------------------- */
+
+.import-list, .build-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.import-item, .build-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 14px 16px;
+  background: var(--panel);
+  border: 3px solid var(--line);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+.import-item.is-imported, .build-item.is-done { opacity: 0.75; }
+.import-info { display: grid; gap: 4px; }
+.import-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+.tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border: 2px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 16px;
+  white-space: nowrap;
+}
+.tag.warn { border-color: var(--yellow); color: var(--yellow); }
+.tag.ok { border-color: var(--green); color: var(--green); }
+
+.building { display: flex; align-items: center; gap: 12px; margin: 0; }
+.spinner {
+  width: 18px; height: 18px;
+  border: 3px solid rgba(255, 210, 63, 0.25);
+  border-top-color: var(--yellow);
+  animation: spin 0.8s steps(8) infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.build-error summary { cursor: pointer; color: var(--red); font-size: 17px; }
+.build-error pre {
+  max-height: 240px; overflow: auto; white-space: pre-wrap;
+  font-family: var(--mono); font-size: 16px; color: var(--muted);
+  background: #08030f; padding: 10px; border: 2px solid var(--line);
+}
+
+/* ---------------------------------- игрок ------------------------------- */
+
+.player { display: flex; flex-direction: column; gap: 14px; }
+.player-bar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.player-title { margin: 0; font-family: var(--body); font-size: 27px; letter-spacing: 0.03em; }
+.player-tools { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+
+.dos-host.dos-host {
+  position: relative;
+  width: 100%;
+  height: min(70vh, 760px);
+  border: 5px solid #3a1d61;
+  box-shadow: 8px 8px 0 var(--shadow), 0 0 30px rgba(77, 226, 255, 0.12);
+  background: #000;
+  overflow: hidden;
+}
+/* js-dos вешает на контейнер .jsdos-rso с height:100% — перебиваем специфичностью */
+.dos-host.dos-host { height: min(70vh, 760px); background: #000; }
+.dos-placeholder {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--green); font-family: var(--mono); font-size: 20px;
+}
+.player-hint { color: var(--muted); font-family: var(--mono); font-size: 17px; margin: 0; }
+
+/* ---------------------------------- мелочи ------------------------------ */
+
+.drafts { margin-top: 34px; }
+.drafts h2 { font-family: var(--body); font-size: 23px; color: var(--cyan); text-transform: uppercase; }
+.drafts ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.drafts li { padding: 12px 14px; background: var(--panel); border: 3px solid var(--line); }
+
+.error-screen { text-align: center; padding: 60px 20px; }
+.error-screen .code { font-family: var(--pixel); font-size: 40px; color: var(--magenta); text-shadow: 4px 4px 0 #000; }
+.error-screen h1 { font-family: var(--body); font-size: 30px; margin: 18px 0 10px; }
+
+@media (max-width: 720px) {
+  body { font-size: 19px; }
+  .topbar { flex-wrap: wrap; gap: 12px; padding: 12px 16px; }
+  .nav { width: 100%; justify-content: flex-start; }
+  .page { padding: 22px 16px 40px; }
+  .page-head h1 { font-size: 16px; }
+  .dos-host { height: 55vh; }
+  .footer { flex-direction: column; }
+  .auth-console { padding: 20px 16px; }
+}
+
+/* ---------- заголовки внутри блоков и ссылки админки ---------- */
+
+.hint-title {
+  margin: 0 0 14px;
+  font-family: var(--body);
+  font-size: 23px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.admin-links { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 12px; }
+
+.exe-item input[type=checkbox] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--magenta);
+  margin: 0;
+}
+.exe-item { align-items: center; }
+
+.auth-console .field { color: var(--muted); }
+
+/* ---------- геймпад: подсказка и фокус ---------- */
+
+.gp-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  display: none;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 16px;
+  background: rgba(20, 8, 34, 0.94);
+  border: 3px solid var(--magenta);
+  box-shadow: 4px 4px 0 var(--shadow);
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--muted);
+  z-index: 70;
+  white-space: nowrap;
+}
+.gp-hint b { color: var(--yellow); font-weight: 400; }
+.gp-hint-title { color: var(--magenta); }
+
+body.gp-connected .gp-hint { display: flex; }
+body.is-player .gp-hint { display: none; }
+
+.gp-focus {
+  outline: 4px solid var(--yellow) !important;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 9px rgba(255, 210, 63, 0.16) !important;
+}
+
+body.is-player .joystick { display: none; }
+
+@media (max-width: 720px) {
+  .gp-hint { font-size: 13px; gap: 8px; padding: 6px 10px; }
+}
+
+/* ==========================================================================
+   КОНСОЛЬ RETRO COMPUTER — центральная часть сайта
+   ========================================================================== */
+
+body {
+  background-color: #240910;
+  background-image:
+    radial-gradient(circle at 50% -10%, rgba(163, 20, 50, 0.55), transparent 55%),
+    radial-gradient(circle at 10% 110%, rgba(201, 162, 74, 0.14), transparent 45%),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0 2px, transparent 2px 4px);
+}
+
+.topbar {
+  background: linear-gradient(180deg, #f7ecd2, #ead9b6);
+  border-bottom: 4px solid #a31432;
+  box-shadow: 0 6px 0 #6d0a1c;
+}
+.brand { color: #a31432; text-shadow: 2px 2px 0 #d9c194, 4px 4px 0 rgba(0, 0, 0, 0.35); }
+.brand span { color: #2a1f16; }
+.nav a { color: #6f5c44; }
+.nav a:hover { color: #a31432; border-bottom-color: #a31432; }
+.nav .nav-cta { background: #a31432; color: #fff4e2; border-color: #6d0a1c; }
+.nav .nav-cta:hover { background: #c9173a; color: #fff4e2; }
+.user-chip { border-color: #c2a468; background: rgba(255, 255, 255, 0.35); color: #6f5c44; }
+.user-chip b { color: #2a1f16; }
+.role-badge { background: #3f7d20; color: #f4ffe9; }
+.role-badge.admin { background: #a31432; color: #fff4e2; }
+.logout-form button { color: #6f5c44; }
+.logout-form button:hover { color: #a31432; }
+
+.footer {
+  background: #330b14;
+  border-top: 4px solid #a31432;
+  color: #d8bd8f;
+}
+
+/* корпус консоли */
+
+.console {
+  position: relative;
+  max-width: 960px;
+  margin: 6px auto 40px;
+  padding: 92px 34px 46px;
+  background: linear-gradient(180deg, #f9efd8 0%, #f1e3c4 45%, #e7d3a9 100%);
+  border: 3px solid #b9995f;
+  border-radius: 26px;
+  box-shadow:
+    0 12px 0 #8f6f3f,
+    0 26px 48px rgba(0, 0, 0, 0.55),
+    inset 0 2px 0 #fffdf4,
+    inset 0 -18px 34px rgba(150, 110, 60, 0.12);
+  color: #2a1f16;
+  --ink: #2a1f16;
+  --muted: #6f5c44;
+  --panel: #fdf8ea;
+  --panel-2: #f2e6c6;
+  --line: #c2a468;
+  --shadow: #a8894f;
+  --cyan: #a31432;
+  --magenta: #a31432;
+  --yellow: #c98a00;
+  --green: #3f7d20;
+  --red: #a31432;
+}
+
+.console::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 12px;
+  background: linear-gradient(90deg, #8f0f2b, #c9173a 45%, #8f0f2b);
+  border-radius: 23px 23px 0 0;
+}
+
+.console-top {
+  position: absolute;
+  top: 24px;
+  left: 26px;
+  right: 26px;
+  height: 52px;
+}
+
+.console-badge {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  padding: 7px 12px;
+  background: linear-gradient(180deg, #b3162f, #8f0f2b);
+  color: #ffe9c9;
+  font-family: var(--pixel);
+  font-size: 8px;
+  letter-spacing: 1px;
+  border-radius: 3px;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.3), 0 2px 0 #6d0a1c;
+}
+.console-badge span { color: #ffd9a0; }
+
+.console-slot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 40px;
+  background: #2b211a;
+  border-radius: 8px;
+  box-shadow: inset 0 10px 16px #000, 0 2px 0 #fff8e6, 0 -2px 0 #8f6f3f;
+}
+.console-slot::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 8px;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #4a3b2c, #6a5641 50%, #4a3b2c);
+}
+
+.console-vents {
+  position: absolute;
+  right: 0;
+  top: 6px;
+  width: 120px;
+  height: 34px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(90deg, #cbb283 0 4px, transparent 4px 10px);
+  opacity: 0.75;
+}
+
+/* два геймпада слева, вдоль корпуса консоли */
+
+.console-pads {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: auto;
+  bottom: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 2;
+}
+.console-pads .pad-slot { display: block; }
+.console-pads .famicom-pad {
+  width: 330px;
+  filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.55));
+}
+.console-pads .pad-slot--top .famicom-pad { transform: translateX(-72%) rotate(90deg); }
+.console-pads .pad-slot--bottom .famicom-pad { transform: translateX(-72%) rotate(-90deg); }
+
+@media (max-width: 1600px) {
+  .console-pads .famicom-pad { width: 300px; }
+}
+@media (max-width: 1450px) {
+  .console-pads .famicom-pad { width: 260px; }
+}
+@media (max-width: 1320px) {
+  .console-pads .famicom-pad { width: 220px; }
+}
+
+/* Окно стало узким/портретным или низким — пульты переезжают под консоль */
+@media (max-aspect-ratio: 4/3), (max-height: 560px) {
+  .console { margin-bottom: 120px; }
+  .console-pads {
+    top: auto;
+    bottom: -58px;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    transform: none;
+    padding: 0 14px;
+  }
+  .console-pads .famicom-pad { width: 240px; }
+  .console-pads .pad-slot--top .famicom-pad { transform: rotate(-6deg); }
+  .console-pads .pad-slot--bottom .famicom-pad { transform: rotate(6deg); }
+}
+
+/* Узко, но формат ещё широкий — в боковых полях места нет, скрываем */
+@media (max-width: 1240px) and (min-aspect-ratio: 4/3) and (min-height: 561px) {
+  .console-pads { display: none; }
+}
+
+/* Телефоны */
+@media (max-width: 900px) {
+  .console-pads { display: none; }
+}
+
+/* содержимое на кремовом корпусе */
+
+.console .page-head h1 { color: #a31432; text-shadow: 2px 2px 0 #e2cfa6; }
+.console .page-head .sub { color: #6f5c44; }
+
+.console .card { background: #fdf8ea; border-color: #c2a468; box-shadow: 6px 6px 0 #c2a468; }
+.console .card:hover { border-color: #a31432; box-shadow: 8px 8px 0 #b99a5f; }
+.console .card-title { color: #2a1f16; }
+.console .meta { color: #6f5c44; }
+.console .cover.placeholder {
+  background: repeating-linear-gradient(45deg, #f2e6c6 0 14px, #e8d5ac 14px 28px);
+}
+.console .cover.placeholder span { color: #a31432; text-shadow: 2px 2px 0 #e8d5ac; }
+
+.console .btn { background: #f2e6c6; border-color: #b9995f; color: #2a1f16; box-shadow: 4px 4px 0 #c2a468; }
+.console .btn:hover { background: #f7eed6; }
+.console .btn.primary { background: linear-gradient(180deg, #b3162f, #a31432); border-color: #6d0a1c; color: #fff4e2; }
+.console .btn.primary:hover { background: #c9173a; }
+.console .btn.ghost { background: transparent; border-color: transparent; color: #6f5c44; box-shadow: none; }
+.console .btn.ghost:hover { background: rgba(163, 20, 50, 0.08); color: #a31432; }
+.console .btn.danger { background: transparent; border-color: #a31432; color: #a31432; }
+
+.console .field { color: #6f5c44; }
+.console .field > span, .console .field > legend { color: #a31432; }
+.console .field input[type=text], .console .field input[type=email],
+.console .field input[type=password], .console .field input[type=number],
+.console .field select, .console .field textarea {
+  background: #fffdf6; color: #2a1f16; border-color: #c2a468;
+}
+.console .field input:focus, .console .field select:focus { border-color: #a31432; box-shadow: 0 0 0 3px rgba(163, 20, 50, 0.15); }
+
+.console .panel, .console .hint, .console .empty {
+  background: #fdf8ea; border-color: #c2a468; box-shadow: 6px 6px 0 #c2a468;
+}
+.console .hint h2, .console .hint-title, .console .drafts h2 { color: #a31432; }
+.console .hint ul, .console .hint li, .console .empty p, .console .muted { color: #6f5c44; }
+
+.console .flash-item { background: #fff7e2; border-color: #c2a468; color: #2a1f16; }
+.console .flash-item.error { border-color: #a31432; background: #fbe7e4; }
+.console .flash-item.ok { border-color: #3f7d20; background: #eef7e2; }
+
+.console .table th { background: #a31432; color: #fff4e2; }
+.console .table td, .console .table th { border-color: #c2a468; }
+.console .table tr:nth-child(even) td { background: rgba(163, 20, 50, 0.04); }
+
+.console .stat, .console .import-item, .console .build-item, .console .drafts li {
+  background: #fdf8ea; border-color: #c2a468; box-shadow: 5px 5px 0 #c2a468;
+}
+.console .stat-value { color: #a31432; }
+.console .tag { border-color: #c2a468; color: #6f5c44; background: rgba(255, 255, 255, 0.4); }
+.console code { background: #f2e6c6; border-color: #c2a468; color: #8a3b00; }
+.console .building { color: #2a1f16; }
+.console .spinner { border-color: rgba(163, 20, 50, 0.2); border-top-color: #a31432; }
+
+/* на страницах входа и игры каркас консоли не нужен */
+
+body.is-auth .console,
+body.is-player .console {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+  max-width: none;
+  margin: 0;
+}
+body.is-auth .console::before,
+body.is-player .console::before,
+body.is-auth .console-top,
+body.is-player .console-top,
+body.is-auth .console-pads,
+body.is-player .console-pads { display: none; }
+
+@media (max-width: 900px) {
+  .console { padding: 76px 16px 40px; border-radius: 18px; }
+  .console-top { left: 14px; right: 14px; top: 18px; }
+  .console-badge { font-size: 6px; padding: 5px 8px; }
+  .console-slot { width: 200px; height: 32px; }
+  .console-vents { display: none; }
+}
+
+
+/* ---------- панель администратора на главной ---------- */
+
+.admin-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 22px;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, #fff6e2, #f7e8c9);
+  border: 3px solid #c2a468;
+  border-left: 8px solid #a31432;
+  box-shadow: 5px 5px 0 #c2a468;
+}
+.admin-strip-label {
+  font-family: var(--body);
+  font-size: 19px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a31432;
+  margin-right: auto;
+}
+body.is-player .admin-strip, body.is-auth .admin-strip { display: none; }
+
+
+/* ---------- статус плеера ---------- */
+
+.player-status {
+  margin: 0;
+  padding: 8px 12px;
+  border: 3px solid var(--line);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 17px;
+}
+.player-status.ok { border-color: var(--green); color: var(--green); }
+.player-status.err { border-color: var(--red); color: #ff9d9d; background: rgba(255, 92, 92, 0.12); }
+
+.dos-placeholder { pointer-events: none; }
+
+/* ---------- модальный плеер ---------- */
+
+.play-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+.play-modal[hidden] { display: none; }
+.play-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 2, 2, 0.88);
+  backdrop-filter: blur(3px);
+}
+.play-window {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(1240px, 96vw);
+  height: min(86vh, 900px);
+  background: #0d0707;
+  border: 3px solid var(--red);
+  box-shadow: 0 0 0 3px #4d0b18, 10px 10px 0 rgba(0, 0, 0, 0.5), 0 30px 90px rgba(0, 0, 0, 0.7);
+}
+.play-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, #5d0d1d, #3a0812);
+  border-bottom: 2px solid #2a060d;
+}
+.play-title {
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffe9c9;
+}
+.play-actions { display: flex; gap: 8px; }
+.play-dos.play-dos { flex: 1 1 auto; min-height: 0; height: auto; border: 0; box-shadow: none; }
+.play-window .player-status { border-width: 0; border-top-width: 3px; background: #140b0b; }
+.play-hint {
+  margin: 0;
+  padding: 7px 14px;
+  color: #b09a7a;
+  font-size: 14px;
+  background: #140b0b;
+}
+body.modal-open { overflow: hidden; }
+
+/* экран запуска внутри плеера */
+.dos-start {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 20px;
+  text-align: center;
+  background: radial-gradient(circle at 50% 38%, #2a1518 0%, #0b0606 72%);
+}
+.dos-start .meta { margin: 0; color: #b09a7a; }
+
+/* плеер внутри модального окна */
+body.is-embed .topbar,
+body.is-embed .footer,
+body.is-embed .gp-hint { display: none; }
+body.is-embed .page { max-width: none; margin: 0; padding: 0; }
+body.is-embed .console {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: #0b0707;
+  box-shadow: none;
+}
+body.is-embed .console-top,
+body.is-embed .console-pads { display: none; }
+body.is-embed .player { gap: 0; }
+body.is-embed .dos-host { height: calc(100vh - 52px); border: 0; box-shadow: none; }
+body.is-embed .player-status {
+  padding: 6px 12px;
+  font-size: 15px;
+  border-width: 0;
+  border-top-width: 3px;
+  background: #140b0b;
+}
+
+
+/* карточки на узких экранах */
+@media (max-width: 900px) {
+  .card { width: calc(50% - 10px); }
+}
+@media (max-width: 520px) {
+  .card { width: 100%; }
+}
+
+
+/* ------------------------- витрина и стойка картриджей ------------------- */
+
+.library-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 22px;
+}
+.library-main { flex: 1 1 auto; min-width: 0; }
+
+.section-title {
+  margin: 0 0 14px;
+  font-family: var(--body);
+  font-size: 24px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #a31432;
+  text-shadow: 2px 2px 0 #e2cfa6;
+}
+
+.cart-dock {
+  flex: 0 0 186px;
+  padding: 12px 12px 10px;
+  background: linear-gradient(180deg, #2b2018 0%, #1a1310 100%);
+  border: 4px solid #6d5a3a;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 3px #120d0a, 6px 6px 0 #3a2b1c;
+}
+.cart-dock-head {
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 3px solid #4a3a26;
+  text-align: center;
+  font-family: var(--body);
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f3d7a8;
+}
+.cart-stack { display: flex; flex-direction: column; gap: 9px; }
+
+.cart {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 10px 8px;
+  background: linear-gradient(180deg, #b3162f, #8d0f24);
+  border: 2px solid #5d0a17;
+  box-shadow: 3px 3px 0 #2a060d;
+  text-decoration: none;
+  color: #ffe9c9;
+  transition: transform 0.1s steps(2), box-shadow 0.1s steps(2);
+}
+.cart:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 #2a060d;
+  border-color: #e8c07a;
+}
+.cart-label {
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.cart-meta { font-family: var(--mono); font-size: 13px; opacity: 0.7; }
+
+.cart-dock-foot {
+  margin-top: 10px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: #9c856a;
+}
+
+@media (max-width: 1180px) {
+  .library-layout { flex-direction: column; }
+  .cart-dock { flex-basis: auto; width: 100%; }
+  .cart-stack { flex-direction: row; flex-wrap: wrap; }
+  .cart { flex: 1 1 170px; }
+}
+
+/* копирайт в подвале */
+.footer { flex-wrap: wrap; }
+.footer-copy { flex: 1 1 320px; text-align: center; opacity: 0.85; }
+
+/* ------------------- витрина: пульты сверху, стойки под ними ------------ */
+
+body.has-rails .console-pads { display: none; }
+
+.library-layout {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) 150px;
+  gap: 18px;
+  align-items: start;
+}
+.rail { display: flex; flex-direction: column; gap: 14px; }
+.rail-pad { position: relative; height: 260px; }
+.rail-pad .famicom-pad {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 240px;
+  transform: translate(-50%, -50%) rotate(90deg);
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.5));
+}
+.rail--right .rail-pad .famicom-pad { transform: translate(-50%, -50%) rotate(-90deg); }
+.rail-rack { display: flex; flex-direction: column; gap: 8px; }
+.rail-rack .cart { padding: 8px 8px 7px; }
+.rail-rack .cart-label { font-size: 15px; }
+
+@media (max-width: 1500px) {
+  .library-layout { grid-template-columns: 138px minmax(0, 1fr) 138px; gap: 14px; }
+  .rail-pad { height: 210px; }
+  .rail-pad .famicom-pad { width: 190px; }
+}
+@media (max-width: 1300px) {
+  .library-layout { grid-template-columns: 120px minmax(0, 1fr) 120px; }
+  .rail-pad { height: 180px; }
+  .rail-pad .famicom-pad { width: 160px; }
+}
+@media (max-width: 1100px) {
+  .library-layout { grid-template-columns: 1fr; }
+  .rail { flex-direction: row; align-items: center; }
+  .rail-pad { height: 120px; width: 140px; }
+  .rail-pad .famicom-pad { width: 120px; }
+  .rail-rack { flex-direction: row; flex-wrap: wrap; }
+}
+
+
+/* формы не должны вылезать за корпус консоли */
+.setup-form, .upload-form { max-width: min(640px, 100%); }
+.row > * { min-width: 0; }
+.field select, .field input[type=text], .field textarea { width: 100%; box-sizing: border-box; }
+.console { overflow-x: clip; }
+
+/* номер сборки в шапке */
+.build-chip {
+  align-self: center;
+  margin-left: 10px;
+  padding: 2px 8px;
+  border: 2px solid var(--line);
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--muted);
+  opacity: 0.75;
+}
+.row { grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); }
+.field select, .field input { min-width: 0; }
+
+/* пульты и стойки — снаружи консоли, сверху слева и справа */
+body.has-rails .console { overflow: visible; }
+.library-layout { display: block; }
+.rail {
+  position: absolute;
+  top: 96px;
+  width: 300px;
+  gap: 12px;
+}
+.rail--left { left: auto; right: 100%; margin-right: 18px; }
+.rail--right { left: 100%; right: auto; margin-left: 18px; }
+.rail-pad { height: auto; }
+.rail-pad .famicom-pad,
+.rail--right .rail-pad .famicom-pad {
+  position: static;
+  width: 100%;
+  transform: none;
+}
+.rail-rack .cart-label { font-size: 16px; }
+
+@media (max-width: 1560px) {
+  .rail { width: 260px; }
+}
+@media (max-width: 1360px) {
+  .rail { width: 220px; top: 80px; }
+}
+@media (max-width: 1200px) {
+  .rail { display: none; }
+}
+
+/* ------------------------- карточка игры ------------------------------ */
+
+.card-desc {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.player-desc {
+  margin: 0;
+  color: var(--muted);
+  font-size: 18px;
+  max-width: 80ch;
+}
+
+.edit-top { display: flex; gap: 22px; align-items: flex-start; }
+.edit-cover { flex: 0 0 180px; display: flex; flex-direction: column; gap: 10px; }
+.edit-cover img,
+.edit-cover .cover {
+  width: 180px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border: 3px solid var(--line);
+  background: #0a0413;
+}
+.edit-main { flex: 1 1 auto; min-width: 0; display: grid; gap: 16px; }
+.check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 19px;
+  color: var(--muted);
+}
+.danger-zone { margin-top: 22px; }
+
+@media (max-width: 760px) {
+  .edit-top { flex-direction: column; }
+  .edit-cover { flex-direction: row; align-items: center; flex-wrap: wrap; }
+}
+
+/* ------------------------- меню в шапке ------------------------------- */
+
+.nav { gap: 8px; }
+
+.nav .nav-link,
+.nav .logout-form button {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 11px;
+  line-height: 1;
+  font-family: var(--body);
+  font-size: 18px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #56381f;
+  background: #fdf4de;
+  border: 3px solid #c2a468;
+  border-bottom-width: 3px;
+  box-shadow: 3px 3px 0 #d9c194;
+  text-decoration: none;
+  transition: transform 0.08s steps(2), box-shadow 0.08s steps(2);
+}
+.nav .nav-link:hover,
+.nav .logout-form button:hover {
+  color: #fff4e2;
+  background: #a31432;
+  border-color: #6d0a1c;
+  box-shadow: 3px 3px 0 #6d0a1c;
+  transform: translate(-1px, -1px);
+}
+.nav .nav-link.is-active {
+  color: #fff4e2;
+  background: #a31432;
+  border-color: #6d0a1c;
+  box-shadow: 3px 3px 0 #6d0a1c;
+}
+.nav .nav-cta {
+  color: #fff4e2;
+  background: #a31432;
+  border: 3px solid #6d0a1c;
+  box-shadow: 3px 3px 0 #6d0a1c;
+  padding: 7px 12px;
+  text-transform: uppercase;
+  font-family: var(--body);
+  font-size: 18px;
+}
+.nav .nav-cta:hover { background: #c9173a; color: #fff4e2; }
+
+/* ---------------------- выравнивание карточек ------------------------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 238px);
+  gap: 20px;
+  align-items: stretch;
+}
+.card { height: 100%; }
+.card-body { flex: 1 1 auto; justify-content: space-between; }
+.card-title a { color: inherit; text-decoration: none; }
+.card-title a:hover { color: #a31432; }
+.card-title { min-height: 2.4em; }
+
+/* ---------------------- страница игры --------------------------------- */
+
+.game-page { display: grid; gap: 18px; }
+.back-link { justify-self: start; }
+.game-hero { display: flex; gap: 26px; align-items: flex-start; }
+.game-cover { flex: 0 0 280px; }
+.game-cover img,
+.game-cover .cover {
+  width: 280px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border: 4px solid var(--line);
+  box-shadow: 6px 6px 0 var(--shadow);
+  background: #0a0413;
+}
+.game-info { flex: 1 1 auto; min-width: 0; display: grid; gap: 14px; }
+.game-title {
+  margin: 0;
+  font-family: var(--body);
+  font-size: 34px;
+  color: #a31432;
+  text-shadow: 2px 2px 0 #e2cfa6;
+}
+.game-meta { margin: 0; color: #6f5c44; font-family: var(--mono); font-size: 18px; }
+.game-desc { margin: 0; color: #4a382a; font-size: 19px; line-height: 1.55; max-width: 70ch; white-space: pre-line; }
+.game-desc.muted { color: #8a7761; font-style: italic; }
+.admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 3px dashed #c2a468;
+}
+
+@media (max-width: 860px) {
+  .game-hero { flex-direction: column; }
+  .game-cover { flex-basis: auto; }
+  .game-cover img, .game-cover .cover { width: 200px; }
+}
+
+/* четыре игры в ряд на центральной панели */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+.card { width: auto; height: 100%; }
+@media (max-width: 1200px) {
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .card { width: auto; }
+}
+
+/* ------------------------- карусель игр ------------------------------- */
+
+.carousel { position: relative; }
+
+.grid {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 16px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 2px 2px 10px;
+  scrollbar-width: none;
+}
+.grid > .card { flex: 0 0 calc((100% - 48px) / 4); }
+.grid::-webkit-scrollbar { display: none; }
+.card { scroll-snap-align: start; min-width: 0; }
+
+.car-btn {
+  position: absolute;
+  top: 42%;
+  z-index: 3;
+  width: 44px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  line-height: 1;
+  color: #fff4e2;
+  background: #a31432;
+  border: 3px solid #6d0a1c;
+  box-shadow: 4px 4px 0 #6d0a1c;
+  cursor: pointer;
+  transition: transform 0.08s steps(2), background 0.1s;
+}
+.car-btn:hover:not(:disabled) { background: #c9173a; transform: translateY(-1px); }
+.car-btn:disabled { opacity: 0.35; cursor: default; }
+.car-prev { left: -34px; }
+.car-next { right: -34px; }
+
+@media (max-width: 1200px) {
+  .grid > .card { flex-basis: calc((100% - 32px) / 3); }
+}
+@media (max-width: 900px) {
+  .grid > .card { flex-basis: calc((100% - 16px) / 2); }
+  .car-prev { left: -18px; }
+  .car-next { right: -18px; }
+}
+@media (max-width: 560px) {
+  .grid > .card { flex-basis: 100%; }
+}
+
+/* статус проверки безопасности */
+.scan-badge {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 1px 7px;
+  font-family: var(--mono);
+  font-size: 14px;
+  border: 2px solid;
+}
+.scan-badge.ok { color: #1f4d12; background: #cfe8bc; border-color: #3f7d20; }
+.scan-badge.warn { color: #5a3a00; background: #f6e2b5; border-color: #b9995f; }
+.scan-badge.bad { color: #fff; background: #a31432; border-color: #6d0a1c; }
+
+/* незаконченные загрузки */
+.drafts-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.drafts li { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.drafts li form { margin-left: auto; }
+
+/* главная: лендинг, шаги, тарифы, о сайте */
+.landing-hero { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 26px; align-items: center; padding: 10px 0 26px; }
+.hero-badge { display: inline-block; font-family: var(--mono); font-size: 13px; letter-spacing: 2px; color: #fff4e2; background: #a31432; padding: 3px 10px; border: 2px solid #6d0a1c; margin-bottom: 12px; }
+.landing-hero h1 { font-family: var(--display); font-size: clamp(30px, 5vw, 54px); line-height: 1.02; margin: 0 0 14px; }
+.hero-lead { font-size: 19px; line-height: 1.45; max-width: 620px; margin: 0 0 20px; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 22px; }
+.hero-stats { display: flex; gap: 26px; flex-wrap: wrap; }
+.hero-stats div { display: flex; flex-direction: column; }
+.hero-stats b { font-family: var(--display); font-size: 28px; }
+.hero-stats span { font-size: 14px; color: #5a3a00; }
+.screen-frame { border: 3px solid #6d0a1c; background: #12060a; padding: 12px; box-shadow: 8px 8px 0 rgba(109, 10, 28, .35); }
+.screen-title { font-family: var(--mono); font-size: 13px; color: #7fd86b; letter-spacing: 1px; border-bottom: 1px dashed #3b5b2f; padding-bottom: 6px; margin-bottom: 10px; }
+.screen-body { font-family: var(--mono); font-size: 15px; color: #b7f2a6; line-height: 1.6; }
+.screen-body p { margin: 0; }
+.screen-cursor { color: #7fd86b; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+.landing-section { margin: 30px 0; }
+.section-title { font-family: var(--display); font-size: 26px; margin: 0 0 6px; }
+.section-lead, .section-note { color: #5a3a00; margin: 0 0 16px; }
+.section-note { font-size: 14px; margin-top: 14px; }
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.step { border: 2px solid #b9995f; background: #fff7e6; padding: 14px; }
+.step-num { font-family: var(--display); font-size: 22px; color: #a31432; }
+.step h3 { margin: 4px 0 6px; font-size: 17px; }
+.step p { margin: 0; font-size: 15px; line-height: 1.4; }
+.feature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.feature { border: 2px solid #b9995f; background: #fff7e6; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+.feature b { font-family: var(--display); font-size: 16px; }
+.feature span { font-size: 15px; line-height: 1.4; }
+.plan-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: stretch; }
+.plan-card { border: 3px solid #b9995f; background: #fff7e6; padding: 16px; display: flex; flex-direction: column; }
+.plan-card.is-current { border-color: #3f7d20; box-shadow: inset 0 0 0 2px #cfe8bc; }
+.plan-card h3 { margin: 0 0 6px; font-family: var(--display); }
+.plan-price { font-family: var(--display); font-size: 30px; color: #a31432; }
+.plan-price small { font-family: var(--body); font-size: 14px; color: #5a3a00; }
+.plan-tagline { margin: 2px 0 10px; color: #5a3a00; }
+.plan-card ul { margin: 0 0 14px; padding-left: 18px; line-height: 1.45; flex: 1; }
+.landing-cta { text-align: center; border-top: 2px dashed #b9995f; padding-top: 24px; }
+.landing-cta h2 { font-family: var(--display); font-size: 26px; margin: 0 0 6px; }
+.about-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.about-card { border: 2px solid #b9995f; background: #fff7e6; padding: 16px; }
+.about-card h2 { font-family: var(--display); font-size: 20px; margin: 0 0 10px; }
+.about-list { margin: 0; padding-left: 20px; line-height: 1.5; }
+.about-list li { margin-bottom: 6px; }
+.about-list.numbered { list-style: decimal; }
+.role-badge.plan { background: #3f7d20; border-color: #2c5a14; color: #fff; }
+
+@media (max-width: 1100px) {
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .landing-hero { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .plan-grid, .about-grid { grid-template-columns: 1fr; }
+  .steps, .feature-grid { grid-template-columns: 1fr; }
+}
+
+pre.requisites { background: #12060a; color: #b7f2a6; border: 2px solid #3b5b2f;
+  padding: 10px 12px; font-family: var(--mono); font-size: 14px; overflow-x: auto; white-space: pre-wrap; }
+
+/* =========================================================
+   Скины консолей и полноэкранная главная
+   ========================================================= */
+body[data-theme] { --frame: #6d0a1c; --accent: #a31432; --surface: #fff7e6; --surface-2: #f3e4c6; --ink: #2a1408; --muted: #5a3a00; }
+
+/* classic: кирпичная стена вместо чёрного фона */
+body[data-theme="classic"] {
+  background-color: #3a0f0b;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.45) 0 2px, rgba(255,255,255,.04) 2px 3px, transparent 3px 46px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.45) 0 2px, transparent 2px 92px),
+    radial-gradient(circle at 50% 0%, #7a2a1c 0%, #4a140e 45%, #2a0806 100%);
+  background-attachment: fixed;
+}
+
+body[data-theme="sega"] {
+  --frame: #1b63c9; --accent: #2f7ff0; --surface: #11161f; --surface-2: #0b0f16; --ink: #e8f0ff; --muted: #9fb3d1;
+  background: radial-gradient(circle at 70% 0%, #12233f 0%, #070a11 55%, #04060a 100%) fixed;
+}
+body[data-theme="dandy"] {
+  --frame: #c41430; --accent: #e01b3c; --surface: #232323; --surface-2: #171717; --ink: #f4ead7; --muted: #c9b99b;
+  background: radial-gradient(circle at 30% 0%, #3a1216 0%, #191919 55%, #0d0d0d 100%) fixed;
+}
+body[data-theme="gameboy"] {
+  --frame: #306230; --accent: #0f380f; --surface: #9bbc0f; --surface-2: #8bac0f; --ink: #0f380f; --muted: #2f5a2f;
+  background-color: #8bac0f;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(15,56,15,.16) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, rgba(15,56,15,.16) 0 1px, transparent 1px 4px);
+  background-attachment: fixed;
+}
+body[data-theme="nintendo"] {
+  --frame: #b5121b; --accent: #b5121b; --surface: #e7e3d8; --surface-2: #d6d2c6; --ink: #22201c; --muted: #5f5b53;
+  background: linear-gradient(180deg, #3b3b3f 0%, #26262a 55%, #1b1b1f 100%) fixed;
+}
+body[data-theme="ps2"] {
+  --frame: #1f6fd0; --accent: #2f8fff; --surface: #16202b; --surface-2: #101821; --ink: #e2ecf9; --muted: #9db2c9;
+  background: radial-gradient(circle at 50% -10%, #16324f 0%, #0a121c 55%, #05080d 100%) fixed;
+}
+
+/* общие перекраски под скин */
+body[data-theme] { color: var(--ink); }
+body[data-theme] .topbar { background: color-mix(in srgb, var(--surface) 88%, #000 12%); border-bottom-color: var(--frame); }
+body[data-theme] .brand { color: var(--accent); }
+body[data-theme] .brand span { color: var(--ink); }
+body[data-theme] :is(.console, .panel, .card, .step, .feature, .plan-card, .about-card, .drafts, .import-item, .game-info) {
+  background: var(--surface);
+  border-color: var(--frame);
+  color: var(--ink);
+}
+body[data-theme] :is(.section-lead, .section-note, .meta, .muted, .field-hint, .hero-stats span, .plan-tagline) { color: var(--muted); }
+body[data-theme] :is(h1, h2, h3, .section-title, .game-title) { color: var(--ink); }
+body[data-theme] .btn.primary { background: var(--accent); border-color: var(--frame); color: #fff; }
+body[data-theme] .btn.ghost { color: var(--ink); border-color: var(--frame); }
+body[data-theme] .nav-link { color: var(--ink); }
+body[data-theme] .nav-link.is-active { background: var(--accent); color: #fff; }
+body[data-theme] .nav-cta { background: var(--accent); color: #fff; }
+body[data-theme] :is(.field input, .field select, .field textarea) { background: var(--surface-2); color: var(--ink); border-color: var(--frame); }
+body[data-theme] .hero-badge { background: var(--accent); border-color: var(--frame); }
+body[data-theme] .screen-frame { border-color: var(--frame); }
+body[data-theme] .hero-shot img { border-color: var(--frame); }
+
+/* полноэкранная главная */
+.landing-hero--full {
+  min-height: calc(100vh - 110px);
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: 44px;
+  align-items: center;
+  padding: 8px 0 34px;
+}
+.hero-shot { position: relative; }
+.hero-shot img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 4px solid var(--frame);
+  box-shadow: 16px 16px 0 rgba(0, 0, 0, .38);
+  image-rendering: auto;
+}
+.hero-shot-notes {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 22px;
+  font-size: 15px;
+}
+.hero-shot-notes li::before { content: "▸ "; color: var(--accent); font-weight: bold; }
+.hero-shot-notes b { font-family: var(--display); }
+.hero-shot-caption { margin: 10px 0 0; font-size: 14px; color: var(--muted); }
+
+@media (max-width: 1100px) {
+  .landing-hero--full { min-height: 0; grid-template-columns: 1fr; gap: 26px; }
+  .hero-shot-notes { grid-template-columns: 1fr; }
+}
+
+/* главная вне корпуса консоли */
+body.landing .console {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  max-width: 1440px;
+  padding: 0 10px;
+}
+body.landing .console-top { display: none; }
+body.landing .page { padding-top: 8px; }
+body.landing .console::before, body.landing .console::after { display: none; }
+
+
+/* контраст текста и навигации в скинах */
+body[data-theme] .console { color: var(--ink); }
+body[data-theme] .landing-hero h1,
+body[data-theme] .section-title,
+body[data-theme] .landing-cta h2,
+body[data-theme] .plan-card h3,
+body[data-theme] .step h3,
+body[data-theme] .feature b { color: var(--ink); }
+body[data-theme] .hero-lead,
+body[data-theme] .landing-hero p,
+body[data-theme] .step p,
+body[data-theme] .feature span,
+body[data-theme] .about-card p,
+body[data-theme] .about-list li { color: var(--ink); }
+body[data-theme] .section-lead,
+body[data-theme] .section-note,
+body[data-theme] .hero-shot-caption,
+body[data-theme] .plan-tagline,
+body[data-theme] .hero-stats span { color: var(--muted); }
+body[data-theme] .nav-link {
+  background: transparent;
+  border-color: var(--frame);
+  color: var(--ink);
+}
+body[data-theme] .nav-link.is-active { background: var(--accent); color: #fff; border-color: var(--frame); }
+body[data-theme] .nav-cta { background: var(--accent); color: #fff; border-color: var(--frame); }
+body[data-theme] .topbar { background: color-mix(in srgb, var(--surface) 92%, #000 8%); }
+body[data-theme] .hero-badge { background: var(--accent); color: #fff; border-color: var(--frame); }
+body[data-theme] .hero-stats b { color: var(--ink); }
+body[data-theme] .btn.primary { background: var(--accent); color: #fff; border-color: var(--frame); }
+body[data-theme] .btn.ghost { background: transparent; color: var(--ink); border-color: var(--frame); }
+body[data-theme] .plan-price { color: var(--accent); }
+body[data-theme] .plan-price small { color: var(--muted); }
+body[data-theme] .landing-cta { border-top-color: var(--frame); }
+body[data-theme] .screen-frame { background: #0d0d10; }
+body[data-theme] .tag { background: var(--surface-2); color: var(--ink); border-color: var(--frame); }
+
+/* принудительный контраст заголовков и текста лендинга */
+body[data-theme] .landing-hero h1,
+body[data-theme] .hero-lead,
+body[data-theme] .step h3,
+body[data-theme] .step p,
+body[data-theme] .feature b,
+body[data-theme] .feature span,
+body[data-theme] .section-title,
+body[data-theme] .section-lead,
+body[data-theme] .landing-cta h2,
+body[data-theme] .landing-cta p,
+body[data-theme] .hero-shot-notes li,
+body[data-theme] .hero-shot-caption { color: var(--ink) !important; }
+body[data-theme] .section-lead,
+body[data-theme] .hero-shot-caption { color: var(--muted) !important; }
+
+/* явные светлые цвета текста для тёмных скинов */
+body[data-theme="sega"] .landing-hero h1,
+body[data-theme="sega"] .hero-lead,
+body[data-theme="sega"] .step h3,
+body[data-theme="sega"] .step p,
+body[data-theme="sega"] .feature b,
+body[data-theme="sega"] .feature span,
+body[data-theme="sega"] .section-title,
+body[data-theme="sega"] .landing-cta h2,
+body[data-theme="sega"] .landing-cta p,
+body[data-theme="ps2"] .landing-hero h1,
+body[data-theme="ps2"] .hero-lead,
+body[data-theme="ps2"] .section-title,
+body[data-theme="ps2"] .step h3,
+body[data-theme="ps2"] .step p,
+body[data-theme="ps2"] .feature b,
+body[data-theme="ps2"] .feature span,
+body[data-theme="dandy"] .landing-hero h1,
+body[data-theme="dandy"] .hero-lead,
+body[data-theme="dandy"] .section-title { color: #ffffff !important; }
+body[data-theme="gameboy"] .landing-hero h1,
+body[data-theme="gameboy"] .hero-lead,
+body[data-theme="gameboy"] .section-title,
+body[data-theme="gameboy"] .step h3,
+body[data-theme="gameboy"] .step p,
+body[data-theme="gameboy"] .feature b,
+body[data-theme="gameboy"] .feature span { color: #0f380f !important; }
+
+
+/* classic: светлый текст на кирпичной стене */
+body.landing[data-theme="classic"] .landing-hero h1,
+body.landing[data-theme="classic"] .hero-lead,
+body.landing[data-theme="classic"] .hero-stats b,
+body.landing[data-theme="classic"] .hero-stats span,
+body.landing[data-theme="classic"] .hero-shot-notes li,
+body.landing[data-theme="classic"] .hero-shot-caption { color: #f9edd9 !important; }
+body.landing[data-theme="classic"] .hero-lead { color: #f1ddc2 !important; }
+body.landing[data-theme="classic"] .hero-shot-notes li::before { color: #ffb3a0; }
+body.landing[data-theme="classic"] .hero-shot-caption { color: #d9bda2 !important; }
+body.landing[data-theme="classic"] .hero-badge { color: #fff; }
+body.landing[data-theme="classic"] .hero-shot img { border-color: #a31432; box-shadow: 16px 16px 0 rgba(0,0,0,.45); }
+
+/* на кирпичной стене заголовки секций тоже светлые, карточки остаются кремовыми */
+body.landing[data-theme="classic"] .section-title,
+body.landing[data-theme="classic"] .landing-cta h2 { color: #f9edd9 !important; }
+body.landing[data-theme="classic"] .section-lead,
+body.landing[data-theme="classic"] .section-note,
+body.landing[data-theme="classic"] .landing-cta p { color: #eed9bd !important; }
+body.landing[data-theme="classic"] .step h3,
+body.landing[data-theme="classic"] .step p,
+body.landing[data-theme="classic"] .feature b,
+body.landing[data-theme="classic"] .feature span,
+body.landing[data-theme="classic"] .plan-card h3,
+body.landing[data-theme="classic"] .plan-tagline,
+body.landing[data-theme="classic"] .plan-card li { color: #2a1408 !important; }
+
+/* ghost-кнопки на кирпичном фоне читаемые */
+body.landing[data-theme="classic"] .btn.ghost {
+  color: #f9edd9 !important;
+  border-color: #f9edd9 !important;
+  background: rgba(0, 0, 0, .28) !important;
+}
+body.landing[data-theme="classic"] .btn.primary { color: #fff !important; }
+
+
+/* =========================================================
+   Единая типографика скинов: текст наследует свою поверхность
+   ========================================================= */
+body[data-theme="classic"]  { --on-bg: #f9edd9; --on-surface: #2a1408; }
+body[data-theme="sega"]     { --on-bg: #e8f0ff; --on-surface: #e8f0ff; }
+body[data-theme="dandy"]    { --on-bg: #f4ead7; --on-surface: #f4ead7; }
+body[data-theme="gameboy"]  { --on-bg: #0f380f; --on-surface: #0f380f; }
+body[data-theme="nintendo"] { --on-bg: #f2efe6; --on-surface: #22201c; }
+body[data-theme="ps2"]      { --on-bg: #e2ecf9; --on-surface: #e2ecf9; }
+
+body[data-theme] { color: var(--on-bg); }
+body[data-theme] .console { color: var(--on-surface); }
+
+body[data-theme] :is(.panel, .card, .step, .feature, .plan-card, .about-card,
+                     .drafts, .import-item, .build-item, .game-info, .exe-item,
+                     .table, .settings-block, .hint) {
+  color: var(--on-surface);
+}
+
+/* приглушённый текст — прозрачностью, а не серым цветом */
+body[data-theme] :is(.meta, .muted, .field-hint, .sub, .game-meta, .plan-tagline,
+                     .section-lead, .section-note, .hero-shot-caption, .card-desc,
+                     .hero-stats span, .footer, .build-chip) {
+  color: inherit !important;
+  opacity: .72;
+}
+
+/* таблицы, формы, списки */
+body[data-theme] :is(td, th, label, legend, .table td, .table th) { color: var(--on-surface); }
+body[data-theme] :is(input, select, textarea) { color: var(--on-surface); background: var(--surface-2); border-color: var(--frame); }
+body[data-theme] :is(input::placeholder, textarea::placeholder) { color: var(--on-surface); opacity: .55; }
+body[data-theme] :is(.field span, .field > span) { color: var(--on-surface); }
+
+/* ссылки и кнопки внутри поверхностей */
+body[data-theme] .btn.ghost { color: var(--on-surface); border-color: var(--frame); }
+body[data-theme] .btn.small { color: var(--on-surface); }
+body[data-theme] .btn.primary { color: #fff; }
+body[data-theme] a:not(.btn):not(.nav-link):not(.cart):not(.card) { color: var(--accent); }
+
+/* главная: её собственные блоки живут на фоне страницы */
+body.landing[data-theme] .landing-hero,
+body.landing[data-theme] .landing-section,
+body.landing[data-theme] .landing-cta { color: var(--on-bg); }
+body.landing[data-theme] .step,
+body.landing[data-theme] .feature,
+body.landing[data-theme] .plan-card { color: var(--on-surface); }
+body.landing[data-theme="classic"] .btn.ghost { color: #f9edd9 !important; }
+
+/* футер и мелкий текст на цветных фонах */
+body[data-theme] .footer,
+body[data-theme] .footer span,
+body[data-theme] .footer-copy { color: var(--on-bg) !important; opacity: .85; }
+body[data-theme="gameboy"] :is(.meta, .muted, .field-hint, .sub, .game-meta,
+  .plan-tagline, .section-lead, .section-note, .hero-shot-caption, .card-desc) {
+  color: #2f5a2f !important;
+  opacity: 1;
+}
+body[data-theme="gameboy"] .footer,
+body[data-theme="gameboy"] .footer span { color: #0f380f !important; opacity: 1; }
+
+
+/* =========================================================
+   Узнаваемые скины консолей
+   ========================================================= */
+.theme-chip {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border: 2px solid currentColor;
+  opacity: .85;
+  white-space: nowrap;
+}
+
+/* SEGA Genesis: чёрный корпус, синий логотип, белый текст */
+body[data-theme="sega"] {
+  --on-bg: #ffffff; --on-surface: #eef4ff; --surface: #0d1117; --surface-2: #151b24;
+  --accent: #2f7ff0; --frame: #1e6fd9;
+  background:
+    repeating-linear-gradient(115deg, rgba(47,127,240,.06) 0 2px, transparent 2px 26px),
+    radial-gradient(circle at 70% 0%, #10233f 0%, #060a12 60%, #03050a 100%) fixed;
+}
+body[data-theme="sega"] .brand {
+  background: #1e6fd9; color: #fff; padding: 4px 14px;
+  letter-spacing: 3px; box-shadow: 5px 5px 0 #0a3f86;
+}
+body[data-theme="sega"] .brand span { color: #cfe4ff; }
+body[data-theme="sega"] .topbar { background: #05070c; border-bottom: 3px solid #1e6fd9; }
+body[data-theme="sega"] .console {
+  background: linear-gradient(180deg, #0e1420 0%, #0a0f18 100%);
+  border: 3px solid #1e6fd9;
+  box-shadow: 0 0 0 4px #0a3f86, 0 0 46px rgba(47,127,240,.4);
+}
+body[data-theme="sega"] .console-badge { background: #1e6fd9; color: #fff; }
+body[data-theme="sega"] .btn.primary { background: #1e6fd9; color: #fff; box-shadow: 3px 3px 0 #0a3f86; }
+body[data-theme="sega"] .nav-link.is-active { background: #1e6fd9; color: #fff; }
+
+/* DANDY: чёрный корпус, красный логотип */
+body[data-theme="dandy"] {
+  --on-bg: #fff5e6; --on-surface: #f4ead7; --surface: #1a1a1a; --surface-2: #242424;
+  --accent: #e01b3c; --frame: #c41430;
+  background:
+    repeating-linear-gradient(135deg, rgba(224,27,60,.10) 0 2px, transparent 2px 30px),
+    radial-gradient(circle at 50% 0%, #35151a 0%, #151515 55%, #0a0a0a 100%) fixed;
+}
+body[data-theme="dandy"] .brand {
+  background: #c41430; color: #fff; padding: 4px 14px; letter-spacing: 3px;
+  box-shadow: 5px 5px 0 #6d0a1c;
+}
+body[data-theme="dandy"] .brand span { color: #ffd9d9; }
+body[data-theme="dandy"] .topbar { background: #0c0c0c; border-bottom: 3px solid #c41430; }
+body[data-theme="dandy"] .console { background: linear-gradient(180deg, #202020, #131313); border: 3px solid #c41430; box-shadow: 0 0 0 4px #6d0a1c; }
+body[data-theme="dandy"] .console-badge { background: #c41430; }
+
+/* Game Boy: серый корпус DMG и зелёный экран */
+body[data-theme="gameboy"] {
+  --on-bg: #17240f; --on-surface: #17240f; --surface: #9bbc0f; --surface-2: #8bac0f;
+  --accent: #4b2e83; --frame: #306230;
+  background:
+    repeating-linear-gradient(0deg, rgba(23,36,15,.10) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, rgba(23,36,15,.10) 0 1px, transparent 1px 4px),
+    linear-gradient(180deg, #c9c4bd 0%, #b5b0a8 100%) fixed;
+}
+body[data-theme="gameboy"] .brand {
+  background: #4b2e83; color: #e8e0ff; padding: 4px 14px; letter-spacing: 2px;
+  box-shadow: 5px 5px 0 #2b1a4d;
+}
+body[data-theme="gameboy"] .topbar { background: #c9c4bd; border-bottom: 3px solid #4b2e83; color: #17240f; }
+body[data-theme="gameboy"] .nav-link { color: #17240f; }
+body[data-theme="gameboy"] .console {
+  background: #c9c4bd; border: 3px solid #4b2e83;
+  box-shadow: 0 0 0 5px #8d877e, 0 0 0 8px #4b2e83;
+}
+body[data-theme="gameboy"] .console-badge { background: #4b2e83; color: #fff; }
+body[data-theme="gameboy"] .card,
+body[data-theme="gameboy"] .panel,
+body[data-theme="gameboy"] .step,
+body[data-theme="gameboy"] .feature,
+body[data-theme="gameboy"] .plan-card,
+body[data-theme="gameboy"] .about-card { background: #9bbc0f; border-color: #306230; color: #17240f; }
+body[data-theme="gameboy"] .btn.primary { background: #0f380f; color: #d7f08a; }
+body[data-theme="gameboy"] .btn.ghost { color: #17240f; border-color: #306230; }
+
+/* Nintendo NES: светло-серый корпус, красная полоса */
+body[data-theme="nintendo"] {
+  --on-bg: #f4f1ea; --on-surface: #22201c; --surface: #dedacf; --surface-2: #cfcabd;
+  --accent: #c8102e; --frame: #8f0b20;
+  background: linear-gradient(180deg, #34343a 0%, #1f1f24 60%, #16161a 100%) fixed;
+}
+body[data-theme="nintendo"] .brand {
+  background: #c8102e; color: #fff; padding: 4px 14px; letter-spacing: 2px;
+  box-shadow: 5px 5px 0 #6d0a1c;
+}
+body[data-theme="nintendo"] .topbar { background: #d8d4c8; border-bottom: 3px solid #c8102e; color: #22201c; }
+body[data-theme="nintendo"] .nav-link { color: #22201c; }
+body[data-theme="nintendo"] .console {
+  background: linear-gradient(180deg, #e6e2d6, #d2cec2);
+  border: 3px solid #c8102e;
+  box-shadow: 0 0 0 5px #8c887e, 8px 8px 0 rgba(0,0,0,.35);
+}
+body[data-theme="nintendo"] .console-badge { background: #c8102e; color: #fff; }
+body[data-theme="nintendo"] .card,
+body[data-theme="nintendo"] .panel,
+body[data-theme="nintendo"] .step,
+body[data-theme="nintendo"] .feature,
+body[data-theme="nintendo"] .plan-card,
+body[data-theme="nintendo"] .about-card { background: #f4f1ea; border-color: #c8102e; color: #22201c; }
+body[data-theme="nintendo"] .btn.primary { background: #c8102e; color: #fff; }
+
+/* PlayStation 2: матовый чёрный, синий логотип, подсветка */
+body[data-theme="ps2"] {
+  --on-bg: #eaf2ff; --on-surface: #dfe9f7; --surface: #121b26; --surface-2: #0c131c;
+  --accent: #2f8fff; --frame: #1f6fd0;
+  background:
+    radial-gradient(ellipse at 50% 110%, rgba(47,143,255,.25) 0%, transparent 60%),
+    radial-gradient(circle at 50% -10%, #102a44 0%, #070d15 55%, #04070b 100%) fixed;
+}
+body[data-theme="ps2"] .brand {
+  background: linear-gradient(90deg, #1f6fd0, #2f8fff); color: #fff;
+  padding: 4px 14px; letter-spacing: 3px; box-shadow: 0 0 18px rgba(47,143,255,.6);
+}
+body[data-theme="ps2"] .topbar { background: #05080d; border-bottom: 2px solid #2f8fff; }
+body[data-theme="ps2"] .console {
+  background: linear-gradient(180deg, #101a25, #0a1119);
+  border: 2px solid #1f6fd0;
+  box-shadow: 0 0 0 1px #2f8fff, 0 0 40px rgba(47,143,255,.25);
+}
+body[data-theme="ps2"] .console-badge { background: #1f6fd0; color: #fff; }
+body[data-theme="ps2"] .btn.primary { background: linear-gradient(180deg, #2f8fff, #1f6fd0); color: #fff; }
+
+/* главная всегда без корпуса консоли, в любом скине */
+body.landing .console,
+body.landing[data-theme] .console {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+body.landing .console-top { display: none !important; }
+
+/* кнопки и плашки в светлых скинах */
+body[data-theme="gameboy"] .nav-cta { background: #4b2e83 !important; color: #fff !important; }
+body[data-theme="nintendo"] .nav-cta { background: #c8102e !important; color: #fff !important; }
+body[data-theme] .theme-chip { color: var(--on-bg) !important; border-color: var(--frame) !important; opacity: .92; }
+body[data-theme="gameboy"] .theme-chip { color: #17240f !important; border-color: #4b2e83 !important; }
+
+/* финальная читаемость тёмных скинов */
+body[data-theme="sega"], body[data-theme="dandy"], body[data-theme="ps2"] { --ink: #ffffff; --muted: #c3d3e8; }
+body[data-theme="gameboy"], body[data-theme="nintendo"] { --ink: #17240f; --muted: #3f5a33; }
+body[data-theme="nintendo"] { --ink: #22201c; --muted: #5f5b53; }
+body.landing[data-theme] .hero-stats b,
+body.landing[data-theme] .hero-stats span,
+body.landing[data-theme] .hero-shot-notes li,
+body.landing[data-theme] .hero-shot-caption { color: var(--on-bg) !important; }
+body.landing[data-theme="gameboy"] .hero-stats b,
+body.landing[data-theme="gameboy"] .hero-shot-notes li { color: #17240f !important; }
+body[data-theme="sega"] .nav-cta { background: #1e6fd9 !important; color: #fff !important; }
+body[data-theme="dandy"] .nav-cta { background: #c41430 !important; color: #fff !important; }
+body[data-theme="ps2"] .nav-cta { background: #1f6fd0 !important; color: #fff !important; }
+body[data-theme="nintendo"] .nav-cta { background: #c8102e !important; color: #fff !important; }
+
+
+/* =========================================================
+   Хром консоли и админ-панель по скинам
+   ========================================================= */
+body[data-theme] :is(.console-top, .console-badge, .console-slot, .console-vents,
+                     .admin-strip, .user-chip, .logout-form button) { border-color: var(--frame); }
+
+body[data-theme] .console-top { background: linear-gradient(180deg, var(--surface-2), var(--surface)); }
+body[data-theme] .console-badge { background: var(--accent); color: #fff; box-shadow: 3px 3px 0 var(--frame); }
+body[data-theme] .console-slot { background: #0a0a0c; border: 2px solid var(--frame); }
+body[data-theme] .console-vents { background: repeating-linear-gradient(90deg, var(--frame) 0 2px, transparent 2px 9px); opacity: .55; }
+
+body[data-theme] .admin-strip { background: var(--surface-2); color: var(--on-surface); }
+body[data-theme] .admin-strip-label { color: var(--on-surface); opacity: .85; }
+body[data-theme] .admin-strip .btn,
+body[data-theme] .btn:not(.primary) {
+  background: var(--surface); color: var(--on-surface); border-color: var(--frame);
+}
+body[data-theme] .admin-strip .btn.primary { background: var(--accent); color: #fff; }
+body[data-theme] .user-chip { background: var(--surface-2); color: var(--on-surface); }
+body[data-theme] .user-chip b { color: var(--on-surface); }
+body[data-theme] .logout-form button { background: transparent; color: var(--on-surface); }
+body[data-theme] .nav-link { color: var(--on-surface); }
+
+/* отдельные штрихи под конкретные консоли */
+body[data-theme="sega"] .console-badge { background: #1e6fd9; }
+body[data-theme="dandy"] .console-badge { background: #c41430; }
+body[data-theme="gameboy"] .console-top { background: #c9c4bd; }
+body[data-theme="gameboy"] .console-badge { background: #4b2e83; }
+body[data-theme="gameboy"] .console-slot { background: #4b5a2f; border-color: #306230; }
+body[data-theme="nintendo"] .console-top { background: #d8d4c8; }
+body[data-theme="nintendo"] .console-badge { background: #c8102e; }
+body[data-theme="nintendo"] .console-slot { background: #3a3a3e; }
+body[data-theme="ps2"] .console-top { background: linear-gradient(180deg, #0a1118, #0e1620); }
+body[data-theme="ps2"] .console-badge { background: linear-gradient(90deg, #1f6fd0, #2f8fff); }
+body[data-theme="ps2"] .console-slot { background: #04070b; border-color: #2f8fff; }
+
+/* заголовки внутри консоли — цвет поверхности, рамка по скину */
+body[data-theme] .console :is(h1, h2, h3, .section-title, .game-title, .page-head h1) {
+  color: var(--on-surface) !important;
+}
+body[data-theme] .console { border-color: var(--frame); }
+
+
+/* =========================================================
+   Страницы-справки (о сайте, тарифы, профиль) по скинам
+   ========================================================= */
+body[data-theme] .page-head h1,
+body[data-theme] .page-head .sub { color: var(--on-surface) !important; }
+
+body[data-theme] .about-card {
+  background: var(--surface) !important;
+  border-color: var(--frame) !important;
+}
+body[data-theme] .about-card :is(h2, p, li, b, strong, span) { color: var(--on-surface) !important; }
+body[data-theme] .about-card a { color: var(--accent) !important; }
+body[data-theme] .about-card code {
+  background: var(--surface-2) !important;
+  color: var(--on-surface) !important;
+  border: 1px solid var(--frame);
+  padding: 0 4px;
+}
+body[data-theme] .about-card .muted { color: var(--on-surface) !important; opacity: .72; }
+
+/* профиль и служебные панели */
+body[data-theme] :is(.profile-card, .settings-block, .hint, .panel) :is(h1, h2, h3, p, li, label, span, b, strong) {
+  color: var(--on-surface);
+}
+body[data-theme] :is(.panel, .profile-card, .settings-block, .hint) { background: var(--surface); border-color: var(--frame); }

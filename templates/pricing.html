@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Тарифы и подписка — {{ site.title }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>{{ page.heading or 'Тарифы' }}</h1>
+  {% if page.sub %}<p class="sub">{{ page.sub }}</p>{% endif %}
+</section>
+{% if page.note %}<div class="panel" style="white-space:pre-line; margin-bottom:16px">{{ page.note }}</div>{% endif %}
+
+{% if demo %}
+<div class="panel flash-item ok" style="margin-bottom:18px">
+  Демо-режим оплаты: тариф активируется сразу после нажатия «Оформить» (для проверки механики).
+</div>
+{% endif %}
+
+<div class="plan-grid">
+  {% for key, info in plans.items() %}
+  <article class="plan-card{% if plan == key %} is-current{% endif %}">
+    <h3>{{ info.title }}</h3>
+    <div class="plan-price">
+      {% if info.price %}{{ info.price }} ₽<small> / {{ info.period }}</small>{% else %}0 ₽{% endif %}
+    </div>
+    <p class="plan-tagline">{{ info.tagline }}</p>
+    <ul>
+      {% for item in info.features %}<li>{{ item }}</li>{% endfor %}
+    </ul>
+    {% if plan == key %}
+      <span class="tag">ваш тариф</span>
+    {% elif not user %}
+      <a class="btn {% if key == 'pro' %}primary{% else %}ghost{% endif %}" href="{{ url_for('register') }}">Зарегистрироваться</a>
+    {% elif key == 'free' %}
+      <span class="meta">Переход на бесплатный тариф — через администратора</span>
+    {% else %}
+      <form method="post" action="{{ url_for('billing_checkout') }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <input type="hidden" name="plan" value="{{ key }}">
+        <button class="btn {% if key == 'pro' %}primary{% else %}ghost{% endif %}" type="submit">Оформить</button>
+      </form>
+    {% endif %}
+  </article>
+  {% endfor %}
+</div>
+
+{% if billing.instructions %}
+<section class="about-card" style="margin-top:26px">
+  <h2>Как оплатить</h2>
+  <p style="white-space:pre-line">{{ billing.instructions }}</p>
+  {% if billing.requisites %}<pre class="requisites">{{ billing.requisites }}</pre>{% endif %}
+</section>
+{% endif %}
+
+<section class="about-card" style="margin-top:26px">
+  <h2>Как проходит оплата</h2>
+  <ol class="about-list numbered">
+    <li>Выбираете тариф и нажимаете «Оформить» — создаётся заявка на оплату.</li>
+    <li>Платёжный провайдер присылает подтверждение, и тариф активируется автоматически (в демо-режиме — сразу).</li>
+    <li>Если провайдер ещё не подключён, администратор выставит счёт и включит тариф вручную.</li>
+    <li>История платежей и текущий тариф видны в <a href="{{ url_for('profile') }}">профиле</a>.</li>
+  </ol>
+  <p class="muted">
+    Подписка не продлевается автоматически без согласия. Отмена — в любой момент,
+    доступ сохраняется до конца оплаченного периода.
+  </p>
+</section>
+
+{% if payments %}
+<section class="about-card" style="margin-top:18px">
+  <h2>Мои платежи</h2>
+  <ul class="about-list">
+    {% for item in payments %}
+    <li>{{ item.created_at }} · {{ item.plan }} · {{ item.amount }} ₽ · {{ item.status }} ({{ item.provider }})</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+{% endblock %}

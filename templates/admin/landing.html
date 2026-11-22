@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Главная — контент — {{ site.title }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>Контент главной</h1>
+  <p class="sub">Тексты лендинга. Пустое поле — останется прежний текст.</p>
+</section>
+
+<form class="panel" method="post" action="{{ url_for('admin_landing_save') }}">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+
+  <fieldset class="field">
+    <legend>Первый экран</legend>
+    <div class="row">
+      <label class="field"><span>Бейдж</span>
+        <input type="text" name="hero_badge" maxlength="80" value="{{ landing.hero_badge }}">
+      </label>
+    </div>
+    <label class="field"><span>Заголовок (можно с переносом строки)</span>
+      <textarea name="hero_title" rows="2" maxlength="200">{{ landing.hero_title }}</textarea>
+    </label>
+    <label class="field"><span>Подзаголовок</span>
+      <textarea name="hero_lead" rows="3" maxlength="1200">{{ landing.hero_lead }}</textarea>
+    </label>
+  </fieldset>
+
+  <fieldset class="field">
+    <legend>Блок «Как это работает»</legend>
+    <label class="field"><span>Заголовок блока</span>
+      <input type="text" name="steps_title" maxlength="80" value="{{ landing.steps_title }}">
+    </label>
+    {% for item in landing.steps %}
+    <div class="row">
+      <label class="field"><span>Шаг {{ loop.index }} — заголовок</span>
+        <input type="text" name="step_title_{{ loop.index0 }}" maxlength="80" value="{{ item.title }}">
+      </label>
+      <label class="field"><span>Шаг {{ loop.index }} — текст</span>
+        <input type="text" name="step_text_{{ loop.index0 }}" maxlength="400" value="{{ item.text }}">
+      </label>
+    </div>
+    {% endfor %}
+  </fieldset>
+
+  <fieldset class="field">
+    <legend>Блок «Что уже есть»</legend>
+    <label class="field"><span>Заголовок блока</span>
+      <input type="text" name="features_title" maxlength="80" value="{{ landing.features_title }}">
+    </label>
+    {% for item in landing.features %}
+    <div class="row">
+      <label class="field"><span>Пункт {{ loop.index }} — заголовок</span>
+        <input type="text" name="feature_title_{{ loop.index0 }}" maxlength="80" value="{{ item.title }}">
+      </label>
+      <label class="field"><span>Пункт {{ loop.index }} — текст</span>
+        <input type="text" name="feature_text_{{ loop.index0 }}" maxlength="400" value="{{ item.text }}">
+      </label>
+    </div>
+    {% endfor %}
+  </fieldset>
+
+  <fieldset class="field">
+    <legend>Тарифы и финальный блок</legend>
+    <label class="field"><span>Заголовок тарифов</span>
+      <input type="text" name="pricing_title" maxlength="80" value="{{ landing.pricing_title }}">
+    </label>
+    <label class="field"><span>Подпись под тарифами</span>
+      <input type="text" name="pricing_lead" maxlength="600" value="{{ landing.pricing_lead }}">
+    </label>
+    <label class="field"><span>Финальный заголовок</span>
+      <input type="text" name="cta_title" maxlength="80" value="{{ landing.cta_title }}">
+    </label>
+    <label class="field"><span>Финальный текст</span>
+      <input type="text" name="cta_text" maxlength="400" value="{{ landing.cta_text }}">
+    </label>
+  </fieldset>
+
+  <button class="btn primary big" type="submit">Сохранить</button>
+  <a class="btn ghost" href="{{ url_for('index') }}" target="_blank">Посмотреть главную</a>
+</form>
+{% endblock %}

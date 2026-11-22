@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Загрузка игры — {{ site.title }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>Загрузить игру</h1>
+  <p class="sub">Архив с файлами DOS-игры: ZIP, RAR, 7Z — или готовый бандл <code>.jsdos</code>.</p>
+</section>
+
+<form class="upload-form" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label class="dropzone" id="dropzone">
+    <input type="file" name="archive" accept=".zip,.rar,.7z,.jsdos" required>
+    <span class="dz-icon">📦</span>
+    <span class="dz-title">Перетащите архив сюда</span>
+    <span class="dz-hint">или нажмите, чтобы выбрать файл · до {{ max_mb }} МБ</span>
+    <span class="dz-file" id="dz-file"></span>
+  </label>
+
+  <label class="field">
+    <span>Название игры</span>
+    <input type="text" name="title" placeholder="Например, Wolfenstein 3D" maxlength="120">
+  </label>
+
+  <button class="btn primary big" type="submit">Загрузить и настроить</button>
+</form>
+
+<section class="hint">
+  <h2>Что положить в архив</h2>
+  <ul>
+    <li>Файлы самой игры: <code>WOLF3D.EXE</code>, <code>DOOM.EXE</code>, <code>*.WL6</code>, <code>*.WAD</code> и т. п.</li>
+    <li>Вложенные папки можно — главный файл найдём и покажем списком.</li>
+    <li>Установочные архивы с образами дискет тоже подойдут, если внутри лежат уже распакованные файлы.</li>
+  </ul>
+  <p class="muted">Всё хранится локально на этом компьютере, в папке <code>data/</code>. В интернет ничего не уходит.</p>
+</section>
+
+<script>
+  const dropzone = document.getElementById('dropzone');
+  const input = dropzone.querySelector('input[type=file]');
+  const fileLabel = document.getElementById('dz-file');
+
+  function showName() {
+    if (input.files.length) {
+      fileLabel.textContent = input.files[0].name;
+      dropzone.classList.add('has-file');
+    }
+  }
+  input.addEventListener('change', showName);
+
+  ['dragenter', 'dragover'].forEach(evt =>
+    dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(evt =>
+    dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('over'); }));
+  dropzone.addEventListener('drop', e => {
+    if (e.dataTransfer.files.length) {
+      input.files = e.dataTransfer.files;
+      showName();
+    }
+  });
+</script>
+{% endblock %}

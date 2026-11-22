@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Самопроверка плеера — {{ site.title }}{% endblock %}
+{% block body_class %}is-player{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='vendor/js-dos/js-dos.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="player">
+  <div class="player-bar">
+    <a class="btn ghost small" href="{{ url_for('index') }}">← Библиотека</a>
+    <h1 class="player-title">Самопроверка плеера</h1>
+  </div>
+
+  <p class="sub">
+    Эталонный бандл Digger (26 КБ) из официального репозитория js-dos, без нашего конфига DOSBox.
+    Если он запускается — плеер и окружение в порядке, и дело в конкретном бандле игры.
+  </p>
+
+  <div id="dos" class="dos-host">
+    <div class="dos-start" id="dos-start">
+      <button class="btn primary big" id="dos-start-btn" type="button">▶ Запустить проверку</button>
+      <p class="meta">Загрузится Digger из эталонного бандла</p>
+    </div>
+  </div>
+
+  <p class="player-status" id="dos-status" aria-live="polite">Готов к запуску</p>
+</div>
+
+<script src="{{ url_for('static', filename='vendor/js-dos/js-dos.js') }}"></script>
+<script>
+(function () {
+  const host = document.getElementById('dos');
+  const startScreen = document.getElementById('dos-start');
+  const startButton = document.getElementById('dos-start-btn');
+  const statusEl = document.getElementById('dos-status');
+  const bundle = "{{ url_for('static', filename='vendor/test/digger.jsdos') }}";
+
+  function say(text, kind) {
+    statusEl.textContent = text;
+    statusEl.className = 'player-status' + (kind ? ' ' + kind : '');
+    console.log('[selftest]', text);
+  }
+
+  window.addEventListener('error', function (event) {
+    say('Ошибка страницы: ' + event.message, 'err');
+  });
+  window.addEventListener('unhandledrejection', function (event) {
+    const reason = event.reason && (event.reason.message || event.reason);
+    console.warn('[selftest] rejection:', reason);
+    say('Ошибка: ' + reason, 'err');
+  });
+
+  startButton.addEventListener('click', function () {
+    startScreen.remove();
+    say('Запускаем эталонный бандл…');
+    try {
+      window.__retroPlayer = Dos(host, {
+        url: bundle,
+        pathPrefix: "{{ url_for('static', filename='vendor/js-dos/emulators/') }}",
+        theme: 'dark',
+        lang: 'ru',
+        backend: 'dosbox',
+        backendLocked: true,
+        workerThread: false,
+        autoStart: true,
+        autoSave: true,
+        mouseCapture: false,
+        imageRendering: 'pixelated',
+        renderAspect: '4/3',
+        onEvent: function (event) {
+          console.log('[selftest] event:', event);
+          say('js-dos: ' + event);
+          if (event === 'emu-ready' || event === 'ci-ready' || event === 'bundle-ready') {
+            say('Эталонный бандл запущен — плеер работает', 'ok');
+          }
+        }
+      });
+    } catch (error) {
+      say('Не удалось создать плеер: ' + error, 'err');
+    }
+    setTimeout(function () {
+      if (!host.querySelector('canvas')) {
+        say('Canvas не появился за 20 секунд', 'err');
+      }
+    }, 20000);
+  });
+})();
+</script>
+{% endblock %}

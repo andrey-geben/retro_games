@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Пользователи — {{ site.title }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>ПОЛЬЗОВАТЕЛИ</h1>
+  <p class="sub">Всего: {{ users|length }}</p>
+</section>
+
+<div class="panel">
+  <h2 class="hint-title">Создать пользователя</h2>
+  <form class="upload-form" method="post" action="{{ url_for('admin_user_create') }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <div class="row">
+      <label class="field"><span>Имя</span><input type="text" name="username" required maxlength="24"></label>
+      <label class="field"><span>E-mail</span><input type="email" name="email" required maxlength="120"></label>
+      <label class="field"><span>Роль</span>
+        <select name="role">
+          <option value="user">user</option>
+          <option value="admin">admin</option>
+        </select>
+      </label>
+      <label class="field"><span>Пароль (пусто — сгенерировать)</span><input type="text" name="password" maxlength="80"></label>
+    </div>
+    <button class="btn primary" type="submit">Создать</button>
+  </form>
+</div>
+
+<div class="panel" style="overflow-x:auto">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Имя</th><th>E-mail</th><th>Роль</th><th>Тариф</th><th>Почта</th><th>Доступ</th><th>Вход</th><th>Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in users %}
+      <tr>
+        <td>{{ item.username }}{% if item.id == user.id %} <span class="tag">это вы</span>{% endif %}</td>
+        <td class="muted">{{ item.email }}</td>
+        <td>
+          <form method="post" action="{{ url_for('admin_set_plan', username=item.username) }}">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <select name="plan" onchange="this.form.submit()">
+              {% for key, info in plans.items() %}
+              <option value="{{ key }}" {% if (item.plan or 'free') == key %}selected{% endif %}>{{ info.title }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </td>
+        <td>
+          <form method="post" action="{{ url_for('admin_user_role', user_id=item.id) }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <select name="role" onchange="this.form.submit()">
+              <option value="user" {% if item.role == 'user' %}selected{% endif %}>user</option>
+              <option value="admin" {% if item.role == 'admin' %}selected{% endif %}>admin</option>
+            </select>
+          </form>
+        </td>
+        <td>
+          {% if item.verified %}<span class="tag ok">да</span>
+          {% else %}<span class="tag warn">нет</span>{% endif %}
+        </td>
+        <td>
+          {% if item.active %}<span class="tag ok">активен</span>
+          {% else %}<span class="tag warn">заблокирован</span>{% endif %}
+        </td>
+        <td class="muted">{{ item.last_login.replace('T', ' ') if item.last_login else '—' }}</td>
+        <td>
+          <div class="actions">
+            {% if not item.verified %}
+            <form method="post" action="{{ url_for('admin_user_verify', user_id=item.id) }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+              <button class="btn small" type="submit">Подтвердить</button>
+            </form>
+            {% endif %}
+
+            <form method="post" action="{{ url_for('admin_user_active', user_id=item.id) }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+              <button class="btn small" type="submit">{{ 'Заблокировать' if item.active else 'Разблокировать' }}</button>
+            </form>
+
+            <form method="post" action="{{ url_for('admin_user_password', user_id=item.id) }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+              <input type="hidden" name="password" value="">
+              <button class="btn small" type="submit">Сброс пароля</button>
+            </form>
+
+            <form method="post" action="{{ url_for('admin_user_delete', user_id=item.id) }}"
+                  onsubmit="return confirm('Удалить пользователя {{ item.username }}?')">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+              <button class="btn small danger" type="submit">Удалить</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<section class="hint">
+  <h2>Подсказки</h2>
+  <ul>
+    <li>«Сброс пароля» генерирует новый и показывает его в сообщении — передайте пользователю.</li>
+    <li>Нельзя удалить или заблокировать самого себя и последнего администратора.</li>
+    <li>«Подтвердить» вручную отмечает почту — полезно, когда SMTP ещё не настроен.</li>
+  </ul>
+</section>
+{% endblock %}

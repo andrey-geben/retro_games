@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block title %}Регистрация — {{ site.title }}{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <section class="auth-console term-console" id="reg-console">
+    <div class="term-body">
+      <pre class="term-out" id="reg-out">RETRO-OS 2.2.1  (c) 1994 RETRO GAMES
+REGISTRATION SHELL: ONLINE
+<div class="term-warn">РЕГИСТРАЦИЯ НОВОГО ОПЕРАТОРА</div></pre>
+
+      {% if closed %}
+        <div class="term-status is-error">ДОСТУП ЗАКРЫТ: регистрация отключена администратором.</div>
+      {% else %}
+        <form class="term-form" id="reg-form" method="post" action="{{ url_for('register') }}">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+
+          <div class="term-line" id="r-line-username">
+            <span class="term-prompt">Login:</span>
+            <input class="term-input" type="text" name="username" id="r-username"
+                   maxlength="24" autocomplete="username" spellcheck="false"
+                   value="{{ form.username if form else '' }}" autofocus>
+          </div>
+
+          <div class="term-line is-locked" id="r-line-email">
+            <span class="term-prompt">E-mail:</span>
+            <input class="term-input" type="email" name="email" id="r-email"
+                   maxlength="120" autocomplete="email" spellcheck="false"
+                   value="{{ form.email if form else '' }}" disabled>
+          </div>
+
+          <div class="term-line is-locked" id="r-line-password">
+            <span class="term-prompt">Pass:</span>
+            <input class="term-input" type="password" name="password" id="r-password"
+                   autocomplete="new-password" disabled>
+          </div>
+
+          <div class="term-line is-locked" id="r-line-password2">
+            <span class="term-prompt">Repeat:</span>
+            <input class="term-input" type="password" name="password2" id="r-password2"
+                   autocomplete="new-password" disabled>
+          </div>
+
+          <div class="term-status" id="r-status">Пароль: не короче 10 символов, буквы и цифры</div>
+          <button class="term-submit" type="submit" id="r-submit" hidden>Регистрация</button>
+        </form>
+
+        <noscript>
+          <p class="term-status">JavaScript отключён — обычная форма регистрации:</p>
+          <form class="auth-form" method="post" action="{{ url_for('register') }}">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <label class="field"><span>Имя</span><input type="text" name="username" required></label>
+            <label class="field"><span>E-mail</span><input type="email" name="email" required></label>
+            <label class="field"><span>Пароль</span><input type="password" name="password" required></label>
+            <label class="field"><span>Пароль ещё раз</span><input type="password" name="password2" required></label>
+            <button class="btn primary" type="submit">Зарегистрироваться</button>
+          </form>
+        </noscript>
+      {% endif %}
+
+      <div class="term-foot">
+        <a href="{{ url_for('login') }}">Уже есть аккаунт — войти</a>
+        <a href="{{ url_for('index') }}">← На главную</a>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var form = document.getElementById('reg-form');
+  if (!form) { return; }
+  var out = document.getElementById('reg-out');
+  var status = document.getElementById('r-status');
+  var username = document.getElementById('r-username');
+  var email = document.getElementById('r-email');
+  var pass = document.getElementById('r-password');
+  var pass2 = document.getElementById('r-password2');
+  var fields = [
+    { line: 'r-line-username', input: username, prompt: 'Login' },
+    { line: 'r-line-email', input: email, prompt: 'E-mail' },
+    { line: 'r-line-password', input: pass, prompt: 'Pass' },
+    { line: 'r-line-password2', input: pass2, prompt: 'Repeat' }
+  ];
+  var step = 0;
+
+  var serverErrors = {{ (errors or [])|tojson }};
+  serverErrors.forEach(function (message) {
+    var line = document.createElement('div');
+    line.className = 'term-warn';
+    line.textContent = 'ОШИБКА: ' + message;
+    out.appendChild(line);
+  });
+  if (serverErrors.length) {
+    fields.forEach(function (item) {
+      var line = document.getElementById(item.line);
+      line.classList.remove('is-locked');
+      item.input.disabled = false;
+    });
+    step = 0;
+  }
+
+  function setStatus(text, cls) {
+    status.textContent = text;
+    status.className = 'term-status' + (cls ? ' ' + cls : '');
+  }
+
+  function lockFrom(index) {
+    fields.forEach(function (item, i) {
+      if (i > index) {
+        item.input.disabled = true;
+        document.getElementById(item.line).classList.add('is-locked');
+      }
+    });
+  }
+
+  function unlock(index) {
+    var item = fields[index];
+    item.input.disabled = false;
+    document.getElementById(item.line).classList.remove('is-locked');
+    item.input.focus();
+  }
+
+  function echo(text) {
+    var line = document.createElement('div');
+    line.textContent = text;
+    out.appendChild(line);
+  }
+
+  function validate(index) {
+    var value = fields[index].input.value.trim();
+    if (index === 0) {
+      if (!/^[A-Za-z0-9_.-]{3,24}$/.test(value)) {
+        return 'Логин: 3–24 символа, латиница, цифры, точка, дефис, подчёркивание';
+      }
+    }
+    if (index === 1) {
+      if (!/^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$/.test(value)) {
+        return 'E-mail указан неверно';
+      }
+    }
+    if (index === 2) {
+      if (value.length < 10 || !/[A-Za-z]/.test(value) || !/\d/.test(value)) {
+        return 'Пароль: не короче 10 символов, минимум одна буква и одна цифра';
+      }
+    }
+    if (index === 3) {
+      if (value !== pass.value) {
+        return 'Пароли не совпадают';
+      }
+    }
+    return '';
+  }
+
+  form.addEventListener('submit', function (event) {
+    for (var i = 0; i < fields.length; i += 1) {
+      var problem = validate(i);
+      if (problem) {
+        event.preventDefault();
+        fields.forEach(function (item) { item.input.disabled = false; });
+        setStatus('ОШИБКА: ' + problem, 'is-error');
+        fields[i].input.focus();
+        return;
+      }
+    }
+  });
+
+  fields.forEach(function (item, index) {
+    item.input.addEventListener('keydown', function (event) {
+      if (event.key !== 'Enter') { return; }
+      event.preventDefault();
+      var value = item.input.value.trim();
+      if (!value) {
+        setStatus('ОШИБКА: поле не может быть пустым', 'is-error');
+        return;
+      }
+      var problem = validate(index);
+      if (problem) {
+        setStatus('ОШИБКА: ' + problem, 'is-error');
+        return;
+      }
+      if (index === 3) {
+        echo('> ' + fields[0].input.value.trim() + ' / ' + fields[1].input.value.trim());
+        setStatus('СОЗДАНИЕ АККАУНТА...', 'is-busy');
+        lockFrom(3);
+        document.getElementById('r-submit').click();
+        return;
+      }
+      if (index === 2) {
+        echo('> login: ' + fields[0].input.value.trim() + '  |  ' + fields[1].input.value.trim());
+        lockFrom(2);
+      } else {
+        item.input.readOnly = true;
+      }
+      step = index + 1;
+      unlock(step);
+      if (step === 1) { setStatus('E-mail нужен для подтверждения аккаунта'); }
+      else if (step === 2) { setStatus('Пароль: не короче 10 символов, буквы и цифры'); }
+      else { setStatus('Повторите пароль и нажмите Enter'); }
+    });
+  });
+
+  if (step === 0 && !serverErrors.length) {
+    username.focus();
+    setStatus('3–24 символа: латиница, цифры, точка, дефис, подчёркивание');
+  }
+  document.getElementById('reg-console').addEventListener('click', function (event) {
+    if (event.target.tagName !== 'INPUT') {
+      var active = fields[step] || fields[0];
+      if (active && !active.input.disabled) { active.input.focus(); }
+    }
+  });
+})();
+</script>
+{% endblock %}

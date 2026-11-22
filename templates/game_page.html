@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}{{ game.title }} — {{ site.title }}{% endblock %}
+
+{% block content %}
+<div class="game-page">
+  <a class="btn ghost small back-link" href="{{ url_for('index') }}">← Библиотека</a>
+
+  <div class="game-hero">
+    <div class="game-cover">
+      {% if game.cover %}
+        <img src="{{ url_for('cover_file', game_id=game.id) }}" alt="{{ game.title }}">
+      {% else %}
+        <div class="cover placeholder"><span>{{ game.title[:2]|upper }}</span></div>
+      {% endif %}
+    </div>
+
+    <div class="game-info">
+      <h1 class="game-title">{{ game.title }}</h1>
+
+      <p class="game-meta">
+        {% if game.scan_status == 'clean' %}<span class="scan-badge ok">✔ проверено</span>
+        {% elif game.scan_status == 'unchecked' %}<span class="scan-badge warn">не проверялось</span>
+        {% elif game.scan_status == 'error' %}<span class="scan-badge warn">ошибка проверки</span>
+        {% elif game.scan_status in ('infected', 'blocked') %}<span class="scan-badge bad">заблокировано</span>
+        {% endif %}
+        {{ game.bundle_size|human_size }}
+        {% if game.machine %} · {{ game.machine }}{% endif %}
+        {% if game.cycles %} · {{ game.cycles }} cycles{% endif %}
+        {% if game.plays %} · {{ game.plays }} запусков{% endif %}
+      </p>
+      {% if game.excluded_files %}
+      <p class="game-meta quarantine-note">
+        в карантин убрано: {{ game.excluded_files }}
+      </p>
+      {% endif %}
+
+      {% if game.description %}
+        <p class="game-desc">{{ game.description }}</p>
+      {% else %}
+        <p class="game-desc muted">Описания пока нет — его можно добавить в карточке игры.</p>
+      {% endif %}
+
+      {% set ps = game.play_status or 'ok' %}
+      {% if ps == 'exe_only' %}
+      <div class="verdict warn">
+        <b>В браузере не запускается.</b>
+        Эта сборка работает только в автономном .EXE — скачайте его кнопкой ниже.
+        {% if game.play_note %}<span class="meta">{{ game.play_note }}</span>{% endif %}
+      </div>
+      {% elif ps == 'pending' %}
+      <div class="verdict pending">
+        <b>Игра на проверке.</b> Пока не появится вердикт, она не публикуется в библиотеке.
+      </div>
+      {% endif %}
+
+      <div class="actions">
+        {% if ps == 'exe_only' and not is_admin %}
+        <a class="btn primary big" href="{{ url_for('exe_page', game_id=game.id) }}">Скачать .EXE</a>
+        <a class="btn ghost" href="{{ url_for('play', game_id=game.id) }}">Всё равно попробовать в браузере</a>
+        {% else %}
+        <a class="btn primary big" data-play="{{ url_for('play', game_id=game.id) }}"
+           data-game="{{ game.id }}" data-backend="{{ game.backend or 'dosbox' }}"
+           data-bundle="{{ bundle_url(game) }}"
+           data-title="{{ game.title }}" href="{{ url_for('play', game_id=game.id) }}">▶ Играть</a>
+        <a class="btn ghost" href="{{ url_for('play', game_id=game.id) }}">Открыть в отдельной вкладке</a>
+        {% endif %}
+        <a class="btn ghost" href="{{ url_for('exe_page', game_id=game.id) }}">Скачать .EXE</a>
+        <a class="btn ghost" href="{{ url_for('game_apk', game_id=game.id) }}">Скачать APK</a>
+        <button class="btn ghost" type="button" id="share-btn"
+                data-url="{{ request.url }}">Поделиться</button>
+      </div>
+
+      {% if is_admin %}
+      <div class="admin-actions">
+        <span class="meta">Проверка запуска:</span>
+        <form method="post" action="{{ url_for('probe_game', game_id=game.id) }}" style="display:inline">
+          <button class="btn ghost small" type="submit">▶ Проверить в браузере</button>
+        </form>
+        <form method="post" action="{{ url_for('set_play_status', game_id=game.id) }}" style="display:inline">
+          <input type="hidden" name="value" value="ok">
+          <button class="btn ghost small" type="submit">Запускается</button>
+        </form>
+        <form method="post" action="{{ url_for('set_play_status', game_id=game.id) }}" style="display:inline">
+          <input type="hidden" name="value" value="exe_only">
+          <button class="btn ghost small" type="submit">Только .EXE</button>
+        </form>
+        {% if game.checked_at %}<span class="meta">проверено: {{ game.checked_at }}</span>{% endif %}
+      </div>
+      {% endif %}
+      {% if is_admin %}
+      <div class="admin-actions">
+        <span class="meta">Администратор:</span>
+        <a class="btn ghost small" href="{{ url_for('edit_game', game_id=game.id) }}">Настроить</a>
+        <form method="post" action="{{ url_for('delete_game', game_id=game.id) }}"
+              onsubmit="return confirm('Удалить «{{ game.title }}» из библиотеки?')">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <button class="btn ghost small" type="submit">Удалить</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block modals %}{% include 'partials/play-modal.html' %}{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/library.js') }}?v={{ build }}" defer></script>
+<script>
+(function () {
+  var btn = document.getElementById('share-btn');
+  if (!btn) { return; }
+  btn.addEventListener('click', function () {
+    var url = btn.getAttribute('data-url');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () {
+        btn.textContent = 'Ссылка скопирована';
+        setTimeout(function () { btn.textContent = 'Поделиться'; }, 1800);
+      }).catch(function () { window.prompt('Скопируйте ссылку:', url); });
+    } else {
+      window.prompt('Скопируйте ссылку:', url);
+    }
+  });
+})();
+</script>
+{% endblock %}

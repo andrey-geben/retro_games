@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}{{ site.title }} — ретро-игры в браузере{% endblock %}
+
+{% block body_class %}landing{% endblock %}
+
+{% block content %}
+{% set landing = site.landing %}
+<section class="landing-hero landing-hero--full">
+  <div class="hero-copy">
+    <span class="hero-badge">{{ landing.hero_badge }}</span>
+    <h1 style="white-space:pre-line">{{ landing.hero_title }}</h1>
+    <p class="hero-lead">{{ landing.hero_lead }}</p>
+    <div class="hero-actions">
+      {% if user %}
+        <a class="btn primary big" href="{{ url_for('library_page') }}">▶ Открыть библиотеку</a>
+        <a class="btn ghost big" href="{{ url_for('upload_page') }}">Загрузить игру</a>
+      {% else %}
+        <a class="btn primary big" href="{{ url_for('register') }}">Создать аккаунт</a>
+        <a class="btn ghost big" href="{{ url_for('login') }}">Войти</a>
+      {% endif %}
+    </div>
+    <div class="hero-stats">
+      <div><b>{{ games_count }}</b><span>игр в библиотеке</span></div>
+      <div><b>{{ users_count }}</b><span>участников</span></div>
+      <div><b>0</b><span>установок для игры</span></div>
+    </div>
+  </div>
+  <div class="hero-shot">
+    <img src="{{ url_for('static', filename='img/library-shot.png') }}?v={{ build }}"
+         alt="Библиотека игр: обложки, карточки и запуск в один клик">
+    <ul class="hero-shot-notes">
+      <li><b>1.</b> Обложки, названия и размер игры</li>
+      <li><b>2.</b> Кнопка «Играть» — запуск в браузере</li>
+      <li><b>3.</b> «Подробнее» — описание и обложка</li>
+      <li><b>4.</b> Стойки с играми по бокам</li>
+    </ul>
+    <p class="hero-shot-caption">Так выглядит библиотека: всё в одном экране, без установки и регистрации.</p>
+  </div>
+</section>
+
+<section class="landing-section">
+  <h2 class="section-title">{{ landing.steps_title }}</h2>
+  <div class="steps">
+    {% for item in landing.steps %}
+    <article class="step">
+      <span class="step-num">{{ '%02d' % loop.index }}</span>
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.text }}</p>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="landing-section">
+  <h2 class="section-title">{{ landing.features_title }}</h2>
+  <div class="feature-grid">
+    {% for item in landing.features %}
+    <div class="feature"><b>{{ item.title }}</b><span>{{ item.text }}</span></div>
+    {% endfor %}
+  </div>
+</section>
+
+{% if not simple_mode %}
+<section class="landing-section pricing-preview" id="pricing">
+  <h2 class="section-title">{{ landing.pricing_title }}</h2>
+  <p class="section-lead">{{ landing.pricing_lead }}</p>
+  <div class="plan-grid">
+    {% for key, info in plans.items() %}
+    <article class="plan-card{% if plan == key %} is-current{% endif %}">
+      <h3>{{ info.title }}</h3>
+      <div class="plan-price">
+        {% if info.price %}{{ info.price }} ₽<small> / {{ info.period }}</small>{% else %}0 ₽{% endif %}
+      </div>
+      <p class="plan-tagline">{{ info.tagline }}</p>
+      <ul>
+        {% for item in info.features %}<li>{{ item }}</li>{% endfor %}
+      </ul>
+      {% if plan == key %}
+        <span class="tag">ваш тариф</span>
+      {% elif user %}
+        <form method="post" action="{{ url_for('billing_checkout') }}">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <input type="hidden" name="plan" value="{{ key }}">
+          <button class="btn {% if key == 'pro' %}primary{% else %}ghost{% endif %}" type="submit">
+            {% if info.price %}Оформить{% else %}Перейти на бесплатный{% endif %}
+          </button>
+        </form>
+      {% else %}
+        <a class="btn {% if key == 'pro' %}primary{% else %}ghost{% endif %}" href="{{ url_for('register') }}">Начать</a>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+  <p class="section-note">{{ site.billing.price_note }}</p>
+</section>
+{% endif %}
+
+<section class="landing-section landing-cta">
+  <h2>{{ landing.cta_title }}</h2>
+  <p>{{ landing.cta_text }}</p>
+  {% if user %}
+    <a class="btn primary big" href="{{ url_for('library_page') }}">Перейти в библиотеку</a>
+  {% else %}
+    <a class="btn primary big" href="{{ url_for('register') }}">Зарегистрироваться</a>
+    <a class="btn ghost big" href="{{ url_for('about_page') }}">Подробнее о сайте</a>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,23 @@
+﻿__pycache__/
+*.pyc
+.pytest_cache/
+.idea/
+.venv/
+venv/
+
+# библиотека игр, архивы и временные загрузки
+data/
+games/
+.ctl/
+
+# сборки
+dist/
+build/
+*.spec
+
+# логи, профили браузера, локальные секреты
+*.log
+.chromeprof*/
+.env
+*.keystore
+keystore.password

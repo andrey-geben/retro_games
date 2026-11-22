@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Технические работы — {{ site.title }}{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <section class="auth-console">
+    <h1>ТЕХНИЧЕСКИЕ РАБОТЫ</h1>
+    <p class="sub">
+      Сайт временно закрыт администратором. Загляните чуть позже<span class="cursor">▮</span>
+    </p>
+    <a class="btn ghost" href="{{ url_for('login') }}">Вход для администратора</a>
+  </section>
+</div>
+{% endblock %}

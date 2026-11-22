@@ -1,0 +1,40 @@
+<div class="play-modal" id="play-modal" hidden
+     data-jsdos="{{ url_for('static', filename='vendor/js-dos/js-dos.js') }}?v={{ build }}"
+     data-jsdos-css="{{ url_for('static', filename='vendor/js-dos/js-dos.css') }}?v={{ build }}"
+     data-emulators="{{ url_for('static', filename='vendor/js-dos/emulators/') }}">
+  <div class="play-backdrop" data-modal-close></div>
+  <div class="play-window" role="dialog" aria-modal="true" aria-label="Эмулятор">
+    <div class="tv-set-top">
+      <span class="tv-set-brand">RETRO GAMES</span>
+      <span class="tv-set-model">CRT-1996 · 14" · STEREO</span>
+      <div class="play-actions">
+        <a class="btn ghost small" id="modal-open-tab" href="#" target="_blank" rel="noopener">В новой вкладке</a>
+        <button class="btn small" type="button" data-modal-close>✕ Выключить</button>
+      </div>
+    </div>
+
+    <div class="tv-set-screen">
+      <div class="dos-host play-dos" id="modal-dos">
+        <div class="dos-start" id="modal-start">
+          <button class="btn primary big" id="modal-start-btn" type="button">▶ Включить</button>
+          <p class="meta" id="modal-start-hint">Нажмите, чтобы прогреть кинескоп</p>
+        </div>
+      </div>
+      <div class="tv-glass" aria-hidden="true"></div>
+    </div>
+
+    <div class="tv-set-bottom">
+      <div class="tv-speaker" aria-hidden="true"></div>
+      <span class="tv-set-title" id="modal-title">Игра</span>
+      <div class="tv-knobs" aria-hidden="true">
+        <span class="tv-knob tv-knob--channel"></span>
+        <span class="tv-knob tv-knob--volume"></span>
+      </div>
+      <div class="tv-set-power">
+        <span class="tv-led" aria-hidden="true"></span>
+        <span class="tv-led-label">POWER</span>
+      </div>
+      <p class="player-status" id="modal-status" aria-live="polite">Готов к запуску</p>
+    </div>
+  </div>
+</div>

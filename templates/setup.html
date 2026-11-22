@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Настройка «{{ game.title }}» — {{ site.title }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>Настройка игры</h1>
+  <p class="sub">{{ game.title }} · {{ total_size_human }} · файлов: {{ candidates|length }} исполняемых</p>
+</section>
+
+{% if no_dos %}
+<div class="flash-item error">
+  В архиве не видно ни одного исполняемого файла для DOS: только Windows-программы
+  (<span class="tag warn">Windows</span>) и/или служебные установщики.
+  Похоже, это Windows-версия игры (например, Doom95) или образ для Windows.
+  Для браузера нужна DOS-версия: <code>.EXE</code>, рассчитанный на DOS, плюс файлы
+  данных (<code>.WAD</code>, <code>.GRP</code>, <code>.WL6</code> и т. п.).
+</div>
+{% endif %}
+
+<form class="setup-form" method="post" action="{{ url_for('build_game', game_id=game.id) }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label class="field">
+    <span>Название в библиотеке</span>
+    <input type="text" name="title" value="{{ game.title }}" maxlength="120">
+  </label>
+
+  <fieldset class="field">
+    <legend>Что запускать</legend>
+    <div class="exe-list">
+      {% for cand in candidates %}
+      <label class="exe-item {% if cand.rel_path == selected_exe %}selected{% endif %}">
+        <input type="radio" name="exe" value="{{ cand.rel_path }}"
+               {% if cand.rel_path == selected_exe %}checked{% endif %} required>
+        <span class="exe-name">{{ cand.label }}</span>
+        {% if cand.kind == 'windows' %}<span class="tag warn">Windows</span>{% endif %}
+        <span class="exe-meta">{{ cand.size|human_size }}{% if cand.reason %} · {{ cand.reason }}{% endif %}</span>
+      </label>
+      {% endfor %}
+    </div>
+  </fieldset>
+
+  <label class="field">
+    <span>Ядро эмулятора</span>
+    <select name="backend">
+      <option value="dosbox" {% if (game.backend or 'dosbox') == 'dosbox' %}selected{% endif %}>DOSBox (0.74) — по умолчанию</option>
+      <option value="dosboxX" {% if game.backend == 'dosboxX' %}selected{% endif %}>DOSBox-X — если обычный падает</option>
+    </select>
+  </label>
+
+  <label class="field">
+    <span>Аргументы запуска (необязательно)</span>
+    <input type="text" name="args" maxlength="120" value="{{ game.args or '' }}"
+           placeholder="например: /u EGA 0">
+    <span class="field-hint">Если игра запускается только с параметрами (старые меню-загрузчики).</span>
+  </label>
+
+  <div class="row">
+    <label class="field">
+      <span>Видеокарта</span>
+      <select name="machine">
+        {% for m in machines %}
+        <option value="{{ m }}" {% if m == 'svga_s3' %}selected{% endif %}>{{ m }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Звук</span>
+      <select name="sbtype">
+        {% for s in sounds %}
+        <option value="{{ s }}" {% if s == 'sb16' %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Скорость (cycles)</span>
+      <select name="cycles">
+        {% for value, label in cycles %}
+        <option value="{{ value }}" {% if value == '3000' %}selected{% endif %}>{{ value }} — {{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+  </div>
+
+  <div class="actions">
+    <button class="btn primary big" type="submit">Собрать и играть</button>
+    <a class="btn ghost" href="{{ url_for('index') }}">Отмена</a>
+  </div>
+</form>
+
+<section class="hint">
+  <h2>Подсказки</h2>
+  <ul>
+    <li>Если после запуска игра не идёт — попробуйте другой файл в списке (бывает, что запускать надо не самый крупный).</li>
+    <li>Слишком быстро/медленно — поменяйте «скорость» и соберите заново.</li>
+    <li>Старые игры (до 1990) обычно просят <code>cga</code> или <code>ega</code> вместо <code>svga_s3</code>.</li>
+  </ul>
+  <form method="post" action="{{ url_for('delete_game', game_id=game.id) }}"
+        onsubmit="return confirm('Удалить загрузку «{{ game.title }}»?')">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <button class="btn danger" type="submit">Удалить загрузку</button>
+  </form>
+</section>
+{% endblock %}

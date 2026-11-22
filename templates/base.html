@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ site.title }}{% endblock %}</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕹️</text></svg>">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ build }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}?v={{ build }}">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#04110a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='fonts/tv-fonts.css') }}?v={{ build }}">
+  {% block head %}{% endblock %}
+<script>
+/* js-dos 8 использует navigator.storage (OPFS). В небезопасном контексте
+   (http:// не-localhost) его нет — подставляем простое хранилище в памяти. */
+window.__jsdosStorageOk = !!(navigator.storage && navigator.storage.estimate);
+if (!window.__jsdosStorageOk) {
+  (function () {
+    function makeFile(name) {
+      var data = new Blob([]);
+      return {
+        kind: 'file', name: name,
+        getFile: function () { return Promise.resolve(new File([data], name)); },
+        createWritable: function () {
+          var chunks = [];
+          return Promise.resolve({
+            write: function (chunk) { chunks.push(chunk); return Promise.resolve(); },
+            close: function () { data = new Blob(chunks); return Promise.resolve(); },
+            truncate: function () { chunks = []; data = new Blob([]); return Promise.resolve(); }
+          });
+        }
+      };
+    }
+    function makeDir(name) {
+      var files = new Map(), dirs = new Map();
+      return {
+        kind: 'directory', name: name,
+        getDirectoryHandle: function (n, o) {
+          if (!dirs.has(n)) {
+            if (!(o && o.create)) { return Promise.reject(new DOMException('NotFound', 'NotFoundError')); }
+            dirs.set(n, makeDir(n));
+          }
+          return Promise.resolve(dirs.get(n));
+        },
+        getFileHandle: function (n, o) {
+          if (!files.has(n)) {
+            if (!(o && o.create)) { return Promise.reject(new DOMException('NotFound', 'NotFoundError')); }
+            files.set(n, makeFile(n));
+          }
+          return Promise.resolve(files.get(n));
+        },
+        removeEntry: function (n) { files.delete(n); dirs.delete(n); return Promise.resolve(); },
+        entries: function () {
+          var list = [];
+          files.forEach(function (v, k) { list.push([k, v]); });
+          dirs.forEach(function (v, k) { list.push([k, v]); });
+          return Promise.resolve(list[Symbol.iterator]());
+        },
+        keys: function () {
+          var list = [];
+          files.forEach(function (v, k) { list.push(k); });
+          dirs.forEach(function (v, k) { list.push(k); });
+          return Promise.resolve(list[Symbol.iterator]());
+        },
+        values: function () {
+          var list = [];
+          files.forEach(function (v) { list.push(v); });
+          dirs.forEach(function (v) { list.push(v); });
+          return Promise.resolve(list[Symbol.iterator]());
+        }
+      };
+    }
+    try {
+      Object.defineProperty(navigator, 'storage', {
+        configurable: true,
+        value: {
+          estimate: function () { return Promise.resolve({ quota: 512 * 1024 * 1024, usage: 0 }); },
+          persisted: function () { return Promise.resolve(false); },
+          persist: function () { return Promise.resolve(false); },
+          getDirectory: function () { return Promise.resolve(makeDir('')); }
+        }
+      });
+    } catch (e) {}
+  })();
+}
+</script>
+</head>
+<div class="tv-bg" aria-hidden="true">
+  <div class="tv-bezel">
+    <div class="tv-screen"><span class="tv-glass"></span><span class="tv-scanlines"></span></div>
+    <div class="tv-controls">
+      <div class="tv-knob tv-knob--big"><span></span></div>
+      <div class="tv-knob"><span></span></div>
+      <div class="tv-buttons"><i></i><i></i><i></i></div>
+      <div class="tv-speaker"></div>
+      <div class="tv-brand">RETRO<br>COLOR</div>
+    </div>
+  </div>
+</div>
+
+<div class="tv-frame-overlay" aria-hidden="true"></div>
+
+<body data-theme="{{ site.theme or 'classic' }}" class="theme-{{ site.theme or 'classic' }} {% block body_class %}{% if request.endpoint in ('login', 'register', 'verify', 'maintenance') %}is-auth{% endif %}{% endblock %}">
+
+<header class="topbar" aria-hidden="true"></header>
+
+
+
+<nav class="tv-nav" aria-label="Главное меню">
+  <a class="tv-brand" href="{{ url_for('index') }}" title="{{ site.title }} — на главную">{{ site.title }}</a>
+  {% if user %}
+    <a class="tv-btn{% if request.endpoint == 'index' %} is-active{% endif %}" href="{{ url_for('index') }}">Главная</a>
+    <a class="tv-btn{% if request.endpoint == 'apps_page' %} is-active{% endif %}" href="{{ url_for('apps_page') }}">Приложения</a>
+    <a class="tv-btn{% if request.endpoint in ('library_page', 'play', 'game_page') %} is-active{% endif %}" href="{{ url_for('library_page') }}">Библиотека</a>
+    <a class="tv-btn{% if request.endpoint == 'upload_page' %} is-active{% endif %}" href="{{ url_for('upload_page') }}">Загрузить</a>
+    <a class="tv-btn{% if request.endpoint == 'about_page' %} is-active{% endif %}" href="{{ url_for('about_page') }}">О сайте</a>
+    {% if is_admin %}
+    <a class="tv-btn{% if request.endpoint and request.endpoint.startswith('admin') %} is-active{% endif %}" href="{{ url_for('admin_dashboard') }}">Админка</a>
+    {% endif %}
+
+    <div class="tv-nav-bottom">
+      <span class="tv-chip" title="Оформление сайта">{{ g.theme_title }}</span>
+      <span class="tv-chip tv-chip--build" title="Версия сборки">{{ build }}</span>
+      <span class="tv-user">{% if is_admin %}локальный админ{% else %}гость{% endif %}</span>
+      <span class="tv-led" aria-hidden="true" title="Питание"></span>
+    </div>
+  {% else %}
+    <a class="tv-btn{% if request.endpoint == 'index' %} is-active{% endif %}" href="{{ url_for('index') }}">Главная</a>
+    <a class="tv-btn{% if request.endpoint == 'apps_page' %} is-active{% endif %}" href="{{ url_for('apps_page') }}">Приложения</a>
+    <a class="tv-btn{% if request.endpoint in ('library_page', 'play', 'game_page') %} is-active{% endif %}" href="{{ url_for('library_page') }}">Библиотека</a>
+    <a class="tv-btn{% if request.endpoint == 'about_page' %} is-active{% endif %}" href="{{ url_for('about_page') }}">О сайте</a>
+
+    <div class="tv-nav-bottom">
+      <span class="tv-chip" title="Оформление сайта">{{ g.theme_title }}</span>
+      <span class="tv-chip tv-chip--build" title="Версия сборки">{{ build }}</span>
+      <span class="tv-led is-off" aria-hidden="true" title="Питание"></span>
+    </div>
+  {% endif %}
+</nav>
+
+<main class="page">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash">
+        {% for category, message in messages %}
+          <div class="flash-item {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="console">
+    <div class="console-top" aria-hidden="true">
+      <div class="console-badge"><span>RETRO</span> COMPUTER</div>
+      <div class="console-slot"></div>
+      <div class="console-vents"></div>
+    </div>
+
+    {% block content %}{% endblock %}
+
+    
+</main>
+
+<footer class="footer">
+  <span class="footer-left">
+    <span class="footer-credit">Andrey Geben ·
+      <a class="footer-link" href="https://github.com/andrey-geben"
+         target="_blank" rel="noopener noreferrer">github.com/andrey-geben</a>
+    </span>
+    {{ site.title }} · {{ site.tagline or 'DOS-игры в браузере' }}
+  </span>
+  <span class="footer-copy">© {{ year }} {{ site.title }} · права на игры принадлежат их правообладателям</span>
+  <span>js-dos · DOSBox WASM · сборка {{ build }}</span>
+</footer>
+
+<div class="gp-hint" aria-hidden="true">
+  <span class="gp-hint-title">🎮 Геймпад</span>
+  <span>D-pad — выбор</span>
+  <span><b>A</b> — открыть</span>
+  <span><b>B</b> — назад</span>
+  <span><b>Start</b> — полный экран</span>
+</div>
+
+<script src="{{ url_for('static', filename='js/gamepad.js') }}?v={{ build }}"></script>
+{% block modals %}{% endblock %}
+
+{% block scripts %}{% endblock %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){ window.resetScroll = true; var p = document.querySelector('.page'); if (p) { p.scrollTop = 0; } });
+</script>
+<div class="tv-off-flash" aria-hidden="true"></div>
+<script>
+(function () {
+  function clickSound() {
+    try {
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) { return; }
+      var ctx = new Ctx();
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(220, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(90, ctx.currentTime + 0.03);
+      gain.gain.setValueAtTime(0.035, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime + 0.055);
+      setTimeout(function () { ctx.close(); }, 250);
+    } catch (e) { /* без звука */ }
+  }
+  document.querySelectorAll('.tv-nav .tv-btn, .tv-nav .tv-brand').forEach(function (el) {
+    el.addEventListener('click', clickSound);
+  });
+  var form = document.querySelector('.tv-nav form');
+  var power = document.querySelector('.tv-power');
+  if (form && power) {
+    power.addEventListener('click', function (event) {
+      if (document.body.classList.contains('tv-off')) { return; }
+      event.preventDefault();
+      clickSound();
+      document.body.classList.add('tv-off');
+      setTimeout(function () { form.submit(); }, 430);
+    });
+  }
+})();
+</script>
+<script>
+window.__pwaPrompt = null;
+window.addEventListener('beforeinstallprompt', function (event) {
+  event.preventDefault();
+  window.__pwaPrompt = event;
+  document.dispatchEvent(new Event('pwa-ready'));
+});
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+  });
+}
+</script>
+</body>
+</html>

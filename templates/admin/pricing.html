@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Тарифы — админка{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>Страница «Тарифы»</h1>
+  <p class="sub">Заголовок, описание и карточки тарифов. Изменения сразу видны на сайте.</p>
+</section>
+
+<form method="post" action="{{ url_for('admin_pricing_save') }}" class="panel">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+
+  <label class="field"><span>Заголовок страницы</span>
+    <input type="text" name="heading" maxlength="200" value="{{ page.heading or 'Тарифы' }}">
+  </label>
+
+  <label class="field"><span>Подзаголовок</span>
+    <textarea name="sub" rows="2" maxlength="1000">{{ page.sub or '' }}</textarea>
+  </label>
+
+  <label class="field"><span>Примечание под заголовком (необязательно)</span>
+    <textarea name="note" rows="2" maxlength="2000">{{ page.note or '' }}</textarea>
+  </label>
+
+  {% for key, info in plans.items() %}
+  <fieldset class="field">
+    <legend>{{ info.title }} — <code>{{ key }}</code></legend>
+
+    <label class="field"><span>Название тарифа</span>
+      <input type="text" name="{{ key }}_title" maxlength="100" value="{{ info.title }}">
+    </label>
+
+    <div class="field-row">
+      <label class="field"><span>Цена, ₽</span>
+        <input type="number" name="{{ key }}_price" min="0" step="1" value="{{ info.price or 0 }}">
+      </label>
+      <label class="field"><span>Период</span>
+        <input type="text" name="{{ key }}_period" maxlength="50" value="{{ info.period or '' }}" placeholder="мес / год">
+      </label>
+    </div>
+
+    <label class="field"><span>Короткое описание</span>
+      <input type="text" name="{{ key }}_tagline" maxlength="300" value="{{ info.tagline or '' }}">
+    </label>
+
+    <label class="field"><span>Что входит (по одной строке)</span>
+      <textarea name="{{ key }}_features" rows="6" maxlength="4000">{{ info.features|join('\n') }}</textarea>
+    </label>
+  </fieldset>
+  {% endfor %}
+
+  <button class="btn primary" type="submit">Сохранить тарифы</button>
+</form>
+{% endblock %}

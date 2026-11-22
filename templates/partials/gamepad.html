@@ -1,0 +1,48 @@
+<svg class="joystick joystick--{{ side }}" viewBox="0 0 280 190" aria-hidden="true">
+  <defs>
+    <linearGradient id="padBody{{ side }}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e7e7ec"/>
+      <stop offset="1" stop-color="#c3c3cb"/>
+    </linearGradient>
+  </defs>
+
+  <!-- кабель и разъём -->
+  <path d="M150 92 C150 54 150 34 150 12" fill="none" stroke="#16161b" stroke-width="9"/>
+  <rect x="140" y="70" width="20" height="16" rx="4" fill="#23232a"/>
+  <rect x="128" y="6" width="44" height="22" rx="4" fill="#2a2a31" stroke="#101014" stroke-width="2"/>
+  <rect x="136" y="26" width="28" height="12" rx="2" fill="#9a9aa4" stroke="#4a4a52" stroke-width="2"/>
+
+  <!-- корпус -->
+  <rect x="10" y="88" width="260" height="94" rx="24" fill="url(#padBody{{ side }})"
+        stroke="#8a8a93" stroke-width="3"/>
+  <rect x="24" y="100" width="232" height="70" rx="10" fill="#3b3b42"/>
+
+  <!-- крестовина -->
+  <rect x="54" y="112" width="20" height="46" rx="4" fill="#cfcfd6" stroke="#1e1e23" stroke-width="2"/>
+  <rect x="41" y="125" width="46" height="20" rx="4" fill="#cfcfd6" stroke="#1e1e23" stroke-width="2"/>
+  <circle cx="64" cy="135" r="5" fill="#3b3b42" stroke="#1e1e23" stroke-width="1.5"/>
+
+  <!-- select / start / mode -->
+  <text x="126" y="112" text-anchor="end" font-family="monospace" font-size="7" fill="#9a9aa6">SELECT</text>
+  <text x="126" y="135" text-anchor="end" font-family="monospace" font-size="7" fill="#9a9aa6">START</text>
+  <text x="126" y="158" text-anchor="end" font-family="monospace" font-size="7" fill="#9a9aa6">MODE</text>
+  <rect x="132" y="104" width="26" height="12" rx="6" fill="#22222a" stroke="#141418" stroke-width="1.5"/>
+  <rect x="132" y="127" width="26" height="12" rx="6" fill="#22222a" stroke="#141418" stroke-width="1.5"/>
+  <rect x="132" y="150" width="26" height="12" rx="6" fill="#22222a" stroke="#141418" stroke-width="1.5"/>
+
+  <!-- кнопки X Y / B A -->
+  <text x="214" y="103" text-anchor="middle" font-family="monospace" font-size="7" fill="#9a9aa6">X</text>
+  <text x="246" y="103" text-anchor="middle" font-family="monospace" font-size="7" fill="#9a9aa6">Y</text>
+  <text x="214" y="175" text-anchor="middle" font-family="monospace" font-size="7" fill="#9a9aa6">B</text>
+  <text x="246" y="175" text-anchor="middle" font-family="monospace" font-size="7" fill="#9a9aa6">A</text>
+
+  <circle cx="214" cy="120" r="15" fill="#6fcf5f" stroke="#2f6b26" stroke-width="2.5"/>
+  <circle cx="246" cy="120" r="15" fill="#3d6fe0" stroke="#1b3a86" stroke-width="2.5"/>
+  <circle cx="214" cy="157" r="15" fill="#f2d34a" stroke="#8a7314" stroke-width="2.5"/>
+  <circle cx="246" cy="157" r="15" fill="#e0483e" stroke="#7d1f19" stroke-width="2.5"/>
+
+  <circle cx="209" cy="115" r="4" fill="#ffffff" opacity="0.25"/>
+  <circle cx="241" cy="115" r="4" fill="#ffffff" opacity="0.25"/>
+  <circle cx="209" cy="152" r="4" fill="#ffffff" opacity="0.25"/>
+  <circle cx="241" cy="152" r="4" fill="#ffffff" opacity="0.25"/>
+</svg>

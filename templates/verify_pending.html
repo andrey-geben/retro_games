@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Проверьте почту — {{ site.title }}{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <section class="auth-console term-console" id="verify-console">
+    <div class="term-body">
+      <pre class="term-out">RETRO-OS 2.2.1  (c) 1994 RETRO GAMES
+REGISTRATION SHELL: DONE
+<div class="term-ok">ОПЕРАТОР СОЗДАН</div>
+E-MAIL: {{ email }}
+<div class="term-warn">ТРЕБУЕТСЯ ПОДТВЕРЖДЕНИЕ ПОЧТЫ</div></pre>
+
+      <div class="term-line">
+        <span class="term-prompt">system:</span>
+        <span class="term-input term-static">письмо со ссылкой отправлено на {{ email }}</span>
+      </div>
+      <div class="term-line">
+        <span class="term-prompt">action:</span>
+        <span class="term-input term-static">перейдите по ссылке из письма, затем входите</span>
+      </div>
+
+      {% if link %}
+        <div class="term-status is-error">
+          SMTP не настроен{% if error %} ({{ error }}){% endif %} — письмо не ушло.
+        </div>
+        <div class="term-line">
+          <span class="term-prompt">link:</span>
+          <a class="term-link" href="{{ link }}">{{ link }}</a>
+        </div>
+        <div class="term-status">Подтвердите аккаунт по ссылке выше или попросите администратора отметить почту вручную.</div>
+      {% else %}
+        <div class="term-status">Проверьте папку «Спам», письмо может прийти с задержкой.</div>
+      {% endif %}
+
+      <div class="term-foot">
+        <a href="{{ url_for('login') }}">◀ Ко входу</a>
+        <a href="{{ url_for('index') }}">На главную</a>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}

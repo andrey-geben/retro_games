@@ -1,0 +1,57 @@
+/* Шрифты скина TV: Unbounded (заголовки) и Exo 2 (текст), кириллица */
+@font-face {
+  font-family: 'Unbounded';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('tv-unbounded-600-cyr.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Unbounded';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('tv-unbounded-600-lat.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Unbounded';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('tv-unbounded-700-cyr.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Unbounded';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('tv-unbounded-700-lat.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('tv-exo-2-400-cyr.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('tv-exo-2-400-lat.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('tv-exo-2-600-cyr.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('tv-exo-2-600-lat.woff2') format('woff2');
+}

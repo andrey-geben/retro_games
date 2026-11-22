@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Вход — {{ site.title }}{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <section class="auth-console term-console" id="term-console">
+    <div class="term-head">
+      <span>RETRO-OS 2.2</span>
+      <span class="term-head-right">TTY0 · 9600 8N1 <i class="term-led" aria-hidden="true"></i></span>
+    </div>
+
+    <div class="term-body" id="term-body" tabindex="0" aria-label="Терминал входа">
+      <pre class="term-out" id="term-out">RETRO-OS 2.2.1  (c) 1994 RETRO GAMES
+MEMORY TEST: 640K OK
+CRT: 60 HZ  OK
+SECURE SHELL: ONLINE
+<div class="term-warn">ВНИМАНИЕ: НЕСАНКЦИОНИРОВАННЫЙ ДОСТУП ЗАПРЕЩЁН</div></pre>
+
+      <form class="term-form" id="term-form" method="post" action="{{ url_for('login') }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <input type="hidden" name="next" value="{{ next_url }}">
+
+        <div class="term-line" id="line-login">
+          <span class="term-prompt">Login:</span>
+          <input class="term-input" type="text" name="login" id="f-login"
+                 autocomplete="username" maxlength="120" spellcheck="false" autofocus>
+          <span class="term-cursor" id="cur-login"></span>
+        </div>
+
+        <div class="term-line is-locked" id="line-password">
+          <span class="term-prompt">Pass:</span>
+          <input class="term-input" type="password" name="password" id="f-password"
+                 autocomplete="current-password" disabled>
+          <span class="term-cursor" id="cur-password"></span>
+        </div>
+
+        <div class="term-status" id="term-status">Enter — подтвердить</div>
+        <button class="term-submit" type="submit" id="term-submit" hidden>Войти</button>
+      </form>
+
+      <noscript>
+        <p class="term-status">JavaScript отключён — войдите через обычную форму:</p>
+        <form class="auth-form" method="post" action="{{ url_for('login') }}">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <input type="hidden" name="next" value="{{ next_url }}">
+          <label class="field"><span>Логин или e-mail</span><input type="text" name="login" required></label>
+          <label class="field"><span>Пароль</span><input type="password" name="password" required></label>
+          <button class="btn primary" type="submit">Войти</button>
+        </form>
+      </noscript>
+    </div>
+
+    <div class="term-foot">
+      <a href="{{ url_for('register') }}">Нет аккаунта? Регистрация</a>
+      <a href="{{ url_for('index') }}">← На главную</a>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var form = document.getElementById('term-form');
+  var login = document.getElementById('f-login');
+  var password = document.getElementById('f-password');
+  var linePassword = document.getElementById('line-password');
+  var status = document.getElementById('term-status');
+  var body = document.getElementById('term-body');
+  var out = document.getElementById('term-out');
+  var consoleBox = document.getElementById('term-console');
+  if (!form || !login || !password) { return; }
+
+  function focus() { try { body.focus(); } catch (e) {} }
+  body.addEventListener('click', function () {
+    (password.disabled ? login : password).focus();
+  });
+  focus();
+
+  login.addEventListener('keydown', function (event) {
+    if (event.key !== 'Enter') { return; }
+    event.preventDefault();
+    var value = login.value.trim();
+    if (!value) {
+      status.textContent = 'ОШИБКА: логин не может быть пустым';
+      status.className = 'term-status is-error';
+      return;
+    }
+    login.value = value;
+    login.readOnly = true;
+    linePassword.classList.remove('is-locked');
+    password.disabled = false;
+    password.focus();
+    status.textContent = 'Введите пароль и нажмите Enter';
+    status.className = 'term-status';
+  });
+
+  password.addEventListener('keydown', function (event) {
+    if (event.key !== 'Enter') { return; }
+    event.preventDefault();
+    if (!password.value) {
+      status.textContent = 'ОШИБКА: пароль не может быть пустым';
+      status.className = 'term-status is-error';
+      return;
+    }
+    status.textContent = 'ПРОВЕРКА ДОСТУПА...';
+    status.className = 'term-status is-busy';
+    login.readOnly = true;
+    password.readOnly = true;
+    try { document.getElementById('term-submit').click(); } catch (e) { form.submit(); }
+  });
+
+  // сообщения сервера (неверный пароль, лимиты) — прямо в терминал
+  var flash = document.querySelector('.flash-item.error, .flash-item.ok');
+  if (flash) {
+    var line = document.createElement('div');
+    line.className = flash.classList.contains('error') ? 'term-warn' : 'term-ok';
+    line.textContent = (flash.classList.contains('error') ? 'ОШИБКА: ' : 'OK: ') + flash.textContent;
+    out.appendChild(line);
+    var panel = flash.closest('.flash');
+    if (panel) { panel.hidden = true; }
+  }
+  consoleBox.scrollTop = 0;
+})();
+</script>
+{% endblock %}

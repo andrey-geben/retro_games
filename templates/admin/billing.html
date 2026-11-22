@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Оплата — {{ site.title }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>Способы получения оплаты</h1>
+  <p class="sub">Режим, реквизиты и текст инструкции для страницы тарифов.</p>
+</section>
+
+<form class="panel" method="post" action="{{ url_for('admin_billing_save') }}">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+
+  <fieldset class="field">
+    <legend>Режим оплаты</legend>
+    <label class="field"><span>Как принимать деньги</span>
+      <select name="mode">
+        <option value="manual" {% if billing.mode == 'manual' %}selected{% endif %}>Вручную — заявка + счёт/перевод</option>
+        <option value="demo" {% if billing.mode == 'demo' %}selected{% endif %}>Демо — тариф включается сразу (для теста)</option>
+        <option value="provider" {% if billing.mode == 'provider' %}selected{% endif %}>Платёжный провайдер (вебхук)</option>
+      </select>
+    </label>
+    <label class="field"><span>Провайдер</span>
+      <input type="text" name="provider" maxlength="40" value="{{ billing.provider }}"
+             placeholder="yookassa / cloudpayments / robokassa / bank">
+    </label>
+    <label class="field"><span>Короткая подпись под тарифами</span>
+      <input type="text" name="price_note" maxlength="400" value="{{ billing.price_note }}">
+    </label>
+  </fieldset>
+
+  <fieldset class="field">
+    <legend>Инструкция и реквизиты</legend>
+    <label class="field"><span>Текст для пользователя на странице «Тарифы»</span>
+      <textarea name="instructions" rows="4" maxlength="2000">{{ billing.instructions }}</textarea>
+    </label>
+    <label class="field"><span>Реквизиты (карта, счёт, ссылка на оплату)</span>
+      <textarea name="requisites" rows="3" maxlength="2000">{{ billing.requisites }}</textarea>
+    </label>
+  </fieldset>
+
+  <fieldset class="field">
+    <legend>Вебхук подтверждения оплаты</legend>
+    <p class="field-hint">
+      URL: <code>{{ request.url_root.rstrip('/') }}/billing/webhook</code><br>
+      Метод POST, заголовок <code>X-Billing-Secret</code>, тело
+      <code>{"login": "...", "plan": "pro|year", "amount": 299, "days": 30, "provider": "...", "external_id": "..."}</code>
+    </p>
+    <label class="field"><span>Секрет вебхука (пусто — не менять)</span>
+      <input type="text" name="webhook_secret" maxlength="200" value=""
+             placeholder="{% if billing.webhook_secret %}секрет задан{% else %}секрет не задан{% endif %}">
+    </label>
+    <label class="exe-item">
+      <input type="checkbox" name="clear_secret" value="1">
+      <span>Удалить сохранённый секрет</span>
+    </label>
+  </fieldset>
+
+  <button class="btn primary big" type="submit">Сохранить</button>
+</form>
+
+<div class="panel">
+  <h2 class="hint-title">Тарифы</h2>
+  <table class="table">
+    <thead><tr><th>Тариф</th><th>Цена</th><th>Срок</th></tr></thead>
+    <tbody>
+      {% for key, info in plans.items() %}
+      <tr>
+        <td>{{ info.title }}</td>
+        <td>{% if info.price %}{{ info.price }} ₽{% else %}0 ₽{% endif %}</td>
+        <td>{% if info.days %}{{ info.days }} дней{% else %}—{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="meta">Цены и сроки меняются в <code>auth.py → PLANS</code>.</p>
+</div>
+{% endblock %}

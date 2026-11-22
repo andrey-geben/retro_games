@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Настройки — {{ site.title }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>Настройки сервера</h1>
+  <p class="sub">Адрес и порт, на которых сервер принимает подключения. Применяются при следующем запуске.</p>
+</section>
+
+<div class="panel">
+  <p class="meta">
+    Сейчас сервер слушает <strong>{{ current_host }}:{{ current_port }}</strong>.
+    Сохранённые настройки: <strong>{{ settings.host }}:{{ settings.port }}</strong>.
+  </p>
+
+  <form class="upload-form" method="post" action="{{ url_for('settings_save') }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <label class="field">
+      <span>Адрес (IP)</span>
+      <input type="text" name="host" value="{{ settings.host }}" list="host-options"
+             maxlength="64" required placeholder="0.0.0.0">
+      <datalist id="host-options">
+        {% for value, label in hosts %}
+        <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+      </datalist>
+      <span class="field-hint">Можно выбрать из списка или вписать свой адрес.</span>
+    </label>
+
+    <label class="field">
+      <span>Порт</span>
+      <input type="number" name="port" value="{{ settings.port }}" min="1" max="65535" required>
+    </label>
+
+    <button class="btn primary big" type="submit">Сохранить</button>
+  </form>
+</div>
+
+<section class="hint">
+  <h2>Как это работает</h2>
+  <ul>
+    <li><code>0.0.0.0</code> — принимать подключения со всех интерфейсов: сервер будет доступен
+      в домашней сети по адресу <code>http://{{ lan }}:{{ settings.port }}</code>.</li>
+    <li><code>127.0.0.1</code> — только с этого компьютера.</li>
+    <li>Точный адрес машины — например <code>192.168.1.73</code>, тогда сервер слушает только его.</li>
+    <li>Порт можно задать и при запуске, минуя эту страницу:
+      <code>python app.py --host 127.0.0.1 --port 8080</code>.
+      Аргументы командной строки важнее сохранённых здесь настроек.</li>
+    <li>Если порт занят другой программой, Flask завершится с ошибкой — выберите другой.</li>
+  </ul>
+  <p class="muted">Чтобы применить изменения: остановите сервер (Ctrl+C) и запустите снова.
+    Автоматический перезапуск из веб-интерфейса намеренно не делается — иначе можно
+    потерять доступ к серверу, выбрав недоступный адрес.</p>
+</section>
+{% endblock %}

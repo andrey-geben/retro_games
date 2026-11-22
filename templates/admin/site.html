@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Настройки сайта — {{ site.title }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>НАСТРОЙКИ САЙТА</h1>
+  <p class="sub">Название, регистрация, подтверждение почты и SMTP</p>
+</section>
+
+<form class="setup-form" method="post" action="{{ url_for('admin_site') }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+
+  <fieldset class="field">
+    <legend>Основное</legend>
+    <label class="field">
+      <span>Название сайта</span>
+      <input type="text" name="title" value="{{ settings.title }}" maxlength="60" required>
+    </label>
+    <label class="field">
+      <span>Подзаголовок в футере</span>
+      <input type="text" name="tagline" value="{{ settings.tagline }}" maxlength="120">
+    </label>
+  </fieldset>
+
+  <fieldset class="field">
+    <legend>Доступ</legend>
+    <label class="exe-item">
+      <input type="checkbox" name="registration_open" {% if settings.registration_open %}checked{% endif %}>
+      <span>Открытая регистрация новых пользователей</span>
+    </label>
+    <label class="exe-item">
+      <input type="checkbox" name="require_email" {% if settings.require_email %}checked{% endif %}>
+      <span>Требовать подтверждение e-mail перед входом</span>
+    </label>
+    <label class="exe-item">
+      <input type="checkbox" name="maintenance" {% if settings.maintenance %}checked{% endif %}>
+      <span>Режим обслуживания (сайт закрыт для всех, кроме админов)</span>
+    </label>
+
+    <label class="exe-item">
+      <input type="checkbox" name="scan_uploads" {% if settings.scan_uploads %}checked{% endif %}>
+      <span>Проверять загрузки антивирусом и политикой файлов</span>
+    </label>
+    <label class="exe-item">
+      <input type="checkbox" name="quarantine_uploads" {% if settings.quarantine_uploads %}checked{% endif %}>
+      <span>Карантин опасных файлов (.scr, .msi, .dll и т. п.): вырезать из игры, а не отклонять загрузку</span>
+    </label>
+    <label class="exe-item">
+      <input type="checkbox" name="allow_windows" {% if settings.allow_windows %}checked{% endif %}>
+      <span>Разрешать Windows-исполняемые файлы (PE/NE) в архивах</span>
+    </label>
+    <label class="field"><span>Публичный адрес сайта (для APK)</span>
+      <input type="text" name="public_url" maxlength="200"
+             value="{{ settings.public_url or '' }}" placeholder="http://192.168.1.10:5000">
+    </label>
+  </fieldset>
+
+  <fieldset class="field">
+    <legend>Почта (SMTP) — для подтверждения регистрации</legend>
+    <p class="field-hint">
+      Если не заполнить, письма не отправляются: ссылка подтверждения показывается на экране,
+      а администратор может подтвердить почту вручную.
+      {% if smtp_configured %}<span class="tag ok">SMTP настроен</span>{% endif %}
+    </p>
+
+    <div class="row">
+      <label class="field"><span>Сервер</span>
+        <input type="text" name="smtp_host" value="{{ settings.smtp.host }}" placeholder="smtp.yandex.ru">
+      </label>
+      <label class="field"><span>Порт</span>
+        <input type="number" name="smtp_port" value="{{ settings.smtp.port }}" min="1" max="65535">
+      </label>
+    </div>
+
+    <div class="row">
+      <label class="field"><span>Логин</span>
+        <input type="text" name="smtp_user" value="{{ settings.smtp.user }}" autocomplete="off">
+      </label>
+      <label class="field"><span>Пароль (пусто — не менять)</span>
+        <input type="password" name="smtp_password" value="" autocomplete="new-password"
+               placeholder="{% if settings.smtp.password %}••••••••{% endif %}">
+      </label>
+    </div>
+
+    <label class="field"><span>От кого (From)</span>
+      <input type="text" name="smtp_from" value="{{ settings.smtp.from }}" placeholder="retro@example.com">
+    </label>
+
+    <div class="row">
+      <label class="exe-item">
+        <input type="checkbox" name="smtp_tls" {% if settings.smtp.tls %}checked{% endif %}>
+        <span>STARTTLS (порт 587)</span>
+      </label>
+      <label class="exe-item">
+        <input type="checkbox" name="smtp_ssl" {% if settings.smtp.ssl %}checked{% endif %}>
+        <span>SSL (порт 465)</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <button class="btn primary big" type="submit">Сохранить настройки</button>
+</form>
+
+<section class="hint">
+  <h2>Примеры SMTP</h2>
+  <ul>
+    <li>Яндекс: <code>smtp.yandex.ru</code>, порт <code>465</code>, SSL, логин — полный адрес почты, пароль — «пароль приложения».</li>
+    <li>Mail.ru: <code>smtp.mail.ru</code>, порт <code>465</code>, SSL.</li>
+    <li>Gmail: <code>smtp.gmail.com</code>, порт <code>587</code>, STARTTLS, нужен app password.</li>
+    <li>Локальный тест: <code>python -m smtpd -n -c DebuggingServer localhost:1025</code>, затем сервер <code>localhost</code>, порт <code>1025</code>, без TLS.</li>
+  </ul>
+</section>
+{% endblock %}

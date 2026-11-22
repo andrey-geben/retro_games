@@ -1,0 +1,2271 @@
+/* =========================================================
+   RETRO GAMES — скины консолей
+   Единая система: у каждой темы два контекста —
+   фон страницы (--page-*) и поверхности консоли (--surface-*).
+   Все тексты получают цвет своего контекста, приглушённые —
+   прозрачность, а не серый.
+   ========================================================= */
+
+/* ---------- 1. Палитры ---------- */
+
+body[data-theme="classic"] {
+  --page-bg: #4a140e;
+  --page-text: #fff4e6;
+  --page-muted: #e8cdb4;
+  --surface: #f7eedb;
+  --surface-2: #eadbbd;
+  --surface-text: #2b160a;
+  --surface-muted: #5d3f22;
+  --accent: #b3122f;
+  --accent-text: #ffffff;
+  --border: #7d1628;
+  --header-bg: #efe3c8;
+  --header-text: #2b160a;
+  --page-image:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.42) 0 2px, rgba(255,255,255,.05) 2px 3px, transparent 3px 48px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.42) 0 2px, transparent 2px 96px),
+    radial-gradient(circle at 50% 0%, #7d2b1d 0%, #4a140e 48%, #2a0806 100%);
+}
+
+body[data-theme="sega"] {
+  --page-bg: #04070d;
+  --page-text: #f2f7ff;
+  --page-muted: #a9c0dd;
+  --surface: #0e1420;
+  --surface-2: #0a1018;
+  --surface-text: #eaf2ff;
+  --surface-muted: #a3b9d6;
+  --accent: #2f7ff0;
+  --accent-text: #ffffff;
+  --border: #1e6fd9;
+  --header-bg: #05070c;
+  --header-text: #eaf2ff;
+  --page-image:
+    repeating-linear-gradient(115deg, rgba(47,127,240,.07) 0 2px, transparent 2px 28px),
+    radial-gradient(circle at 70% 0%, #10233f 0%, #060a12 62%, #03050a 100%);
+}
+
+body[data-theme="dandy"] {
+  --page-bg: #101010;
+  --page-text: #fff3e0;
+  --page-muted: #d9b795;
+  --surface: #1b1b1b;
+  --surface-2: #141414;
+  --surface-text: #f7eddc;
+  --surface-muted: #c9b49a;
+  --accent: #d81b3c;
+  --accent-text: #ffffff;
+  --border: #a5132c;
+  --header-bg: #0c0c0c;
+  --header-text: #f7eddc;
+  --page-image:
+    repeating-linear-gradient(135deg, rgba(216,27,60,.10) 0 2px, transparent 2px 32px),
+    radial-gradient(circle at 50% 0%, #3a151b 0%, #161616 58%, #0a0a0a 100%);
+}
+
+body[data-theme="gameboy"] {
+  --page-bg: #c9c4bd;
+  --page-text: #1b2a12;
+  --page-muted: #46603a;
+  --surface: #9bbc0f;
+  --surface-2: #8bac0f;
+  --surface-text: #14240f;
+  --surface-muted: #2f5a2f;
+  --accent: #4b2e83;
+  --accent-text: #ffffff;
+  --border: #306230;
+  --header-bg: #c9c4bd;
+  --header-text: #1b2a12;
+  --page-image:
+    repeating-linear-gradient(0deg, rgba(23,36,15,.10) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, rgba(23,36,15,.10) 0 1px, transparent 1px 4px),
+    linear-gradient(180deg, #cfcac3 0%, #b8b3ab 100%);
+}
+
+body[data-theme="nintendo"] {
+  --page-bg: #232327;
+  --page-text: #f4f1ea;
+  --page-muted: #cbc6ba;
+  --surface: #e3dfd3;
+  --surface-2: #d3cfc2;
+  --surface-text: #23211d;
+  --surface-muted: #5f5b53;
+  --accent: #bf1230;
+  --accent-text: #ffffff;
+  --border: #8f0b20;
+  --header-bg: #d8d4c8;
+  --header-text: #23211d;
+  --page-image: linear-gradient(180deg, #34343a 0%, #1f1f24 60%, #16161a 100%);
+}
+
+body[data-theme="ps2"] {
+  --page-bg: #04070c;
+  --page-text: #eaf3ff;
+  --page-muted: #a7c0dc;
+  --surface: #0f1722;
+  --surface-2: #0a121b;
+  --surface-text: #e6f0ff;
+  --surface-muted: #a0b8d4;
+  --accent: #2f8fff;
+  --accent-text: #ffffff;
+  --border: #1f6fd0;
+  --header-bg: #05080d;
+  --header-text: #eaf3ff;
+  --page-image:
+    radial-gradient(ellipse at 50% 115%, rgba(47,143,255,.28) 0%, transparent 62%),
+    radial-gradient(circle at 50% -10%, #102a44 0%, #070d15 58%, #04070b 100%);
+}
+
+/* ---------- 2. Каркас ---------- */
+
+body[data-theme] {
+  color: var(--page-text) !important;
+  background-color: var(--page-bg) !important;
+  background-image: var(--page-image) !important;
+  background-attachment: fixed !important;
+}
+
+body[data-theme] .topbar {
+  background: var(--header-bg) !important;
+  border-bottom: 3px solid var(--accent) !important;
+}
+body[data-theme] .brand {
+  background: var(--accent) !important;
+  color: var(--accent-text) !important;
+  padding: 4px 12px;
+  letter-spacing: 2px;
+  box-shadow: 4px 4px 0 var(--border);
+}
+body[data-theme] .brand span { color: var(--accent-text) !important; opacity: .85; }
+
+body[data-theme] .nav-link {
+  background: transparent !important;
+  color: var(--header-text) !important;
+  border: 2px solid var(--border) !important;
+}
+body[data-theme] .nav-link.is-active {
+  background: var(--accent) !important;
+  color: var(--accent-text) !important;
+  border-color: var(--accent) !important;
+}
+body[data-theme] .nav-cta {
+  background: var(--accent) !important;
+  color: var(--accent-text) !important;
+  border: 2px solid var(--border) !important;
+}
+body[data-theme] .user-chip,
+body[data-theme] .theme-chip,
+body[data-theme] .build-chip {
+  color: var(--header-text) !important;
+  border-color: var(--border) !important;
+  background: transparent !important;
+}
+body[data-theme] .logout-form button { color: var(--header-text) !important; }
+
+/* ---------- 3. Консоль и поверхности ---------- */
+
+body[data-theme] .console {
+  background: var(--surface) !important;
+  border: 3px solid var(--border) !important;
+  color: var(--surface-text) !important;
+}
+body[data-theme] .console-top {
+  background: linear-gradient(180deg, var(--surface-2), var(--surface)) !important;
+  border-color: var(--border) !important;
+}
+body[data-theme] .console-badge { background: var(--accent) !important; color: var(--accent-text) !important; }
+body[data-theme] .console-slot { background: #08080a !important; border: 2px solid var(--border) !important; }
+body[data-theme] .console-vents { background: repeating-linear-gradient(90deg, var(--border) 0 2px, transparent 2px 9px) !important; opacity: .6; }
+
+body[data-theme] :is(.panel, .card, .step, .feature, .plan-card, .about-card,
+                     .drafts, .import-item, .build-item, .exe-item, .hint,
+                     .profile-card, .settings-block, .admin-strip) {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+  color: var(--surface-text) !important;
+}
+
+/* весь текст внутри консоли — цвет поверхности */
+body[data-theme] .console :is(h1, h2, h3, h4, p, li, span, label, legend, td, th,
+                              b, strong, small, .section-title, .game-title,
+                              .card-title, .page-head h1, .page-head .sub) {
+  color: var(--surface-text) !important;
+}
+body[data-theme] .console :is(.meta, .muted, .field-hint, .sub, .game-meta, .card-desc,
+                              .plan-tagline, .section-lead, .section-note, .hint-title) {
+  color: var(--surface-text) !important;
+  opacity: .72;
+}
+body[data-theme] .console a:not(.btn):not(.cart):not(.card) { color: var(--accent) !important; }
+
+/* ---------- 4. Главная (вне консоли) ---------- */
+
+body.landing .console,
+body.landing[data-theme] .console {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+body.landing .console-top { display: none !important; }
+
+body.landing[data-theme] { color: var(--page-text) !important; }
+body.landing[data-theme] :is(.landing-hero h1, .hero-lead, .hero-stats b, .hero-stats span,
+                             .hero-shot-notes li, .hero-shot-caption,
+                             .section-title, .section-lead, .section-note,
+                             .landing-cta h2, .landing-cta p) {
+  color: var(--page-text) !important;
+}
+body.landing[data-theme] .hero-lead,
+body.landing[data-theme] .section-lead,
+body.landing[data-theme] .section-note,
+body.landing[data-theme] .hero-shot-caption { color: var(--page-muted) !important; }
+body.landing[data-theme] .hero-badge {
+  background: var(--accent) !important;
+  color: var(--accent-text) !important;
+  border: 2px solid var(--border) !important;
+}
+body.landing[data-theme] .hero-shot img { border-color: var(--border) !important; box-shadow: 16px 16px 0 rgba(0,0,0,.4); }
+
+body.landing[data-theme] :is(.step, .feature, .plan-card) { color: var(--surface-text) !important; }
+body.landing[data-theme] :is(.step h3, .step p, .feature b, .feature span,
+                             .plan-card h3, .plan-tagline, .plan-card li) {
+  color: var(--surface-text) !important;
+}
+body.landing[data-theme] .plan-tagline { opacity: .72; }
+
+/* ---------- 5. Кнопки и формы ---------- */
+
+body[data-theme] .btn.primary {
+  background: var(--accent) !important;
+  color: var(--accent-text) !important;
+  border-color: var(--border) !important;
+}
+body[data-theme] .btn:not(.primary) {
+  background: transparent !important;
+  color: var(--surface-text) !important;
+  border-color: var(--border) !important;
+}
+body.landing[data-theme] .btn:not(.primary) { color: var(--page-text) !important; border-color: var(--accent) !important; }
+body[data-theme] .btn:disabled { opacity: .45; }
+
+body[data-theme] :is(input, select, textarea) {
+  background: var(--surface-2) !important;
+  color: var(--surface-text) !important;
+  border: 2px solid var(--border) !important;
+}
+body[data-theme] :is(input, textarea)::placeholder { color: var(--surface-muted) !important; opacity: .8; }
+body[data-theme] code {
+  background: var(--surface-2) !important;
+  color: var(--surface-text) !important;
+  padding: 0 4px;
+  border: 1px solid var(--border);
+}
+
+/* ---------- 6. Служебные блоки ---------- */
+
+body[data-theme] .footer,
+body[data-theme] .footer span,
+body[data-theme] .footer-copy {
+  color: var(--page-muted) !important;
+  opacity: 1;
+}
+
+body[data-theme] .flash-item.ok { background: #244a24 !important; color: #e6ffe0 !important; }
+body[data-theme] .flash-item.error { background: #6d1220 !important; color: #ffe8e8 !important; }
+
+body[data-theme="gameboy"] .page-head h1,
+body[data-theme="gameboy"] .page-head .sub { color: var(--page-text) !important; }
+
+
+/* убираем тёмные/светлые текстовые тени, которые «съедают» контраст */
+body.landing[data-theme] :is(.landing-hero h1, .hero-lead, .section-title,
+                             .landing-cta h2, .hero-badge, .hero-shot-notes li,
+                             .hero-shot-caption, .section-lead, .section-note) {
+  text-shadow: none !important;
+}
+body[data-theme] .console :is(h1, h2, h3, .section-title, .page-head h1, .game-title) {
+  text-shadow: none !important;
+}
+
+
+/* главная: весь контент наследует цвет фона страницы, а не консоли */
+body.landing[data-theme] .console,
+body.landing[data-theme] .console * {
+  color: var(--page-text) !important;
+}
+body.landing[data-theme] :is(.step, .feature, .plan-card),
+body.landing[data-theme] :is(.step, .feature, .plan-card) * {
+  color: var(--surface-text) !important;
+}
+body.landing[data-theme] .hero-lead,
+body.landing[data-theme] .section-lead,
+body.landing[data-theme] .section-note,
+body.landing[data-theme] .hero-shot-caption { color: var(--page-muted) !important; }
+
+
+
+
+/* максимальная специфичность: главная читается цветом страницы */
+body.landing[data-theme] .console :is(h1, h2, h3, p, li, span, strong, b, small,
+  .hero-lead, .hero-badge, .hero-stats b, .hero-stats span, .hero-shot-notes li,
+  .hero-shot-caption, .section-title, .section-lead, .section-note,
+  .landing-cta h2, .landing-cta p) {
+  color: var(--page-text) !important;
+}
+body.landing[data-theme] .console :is(.hero-lead, .section-lead, .section-note,
+  .hero-shot-caption, .hero-stats span) {
+  color: var(--page-muted) !important;
+}
+body.landing[data-theme] .console :is(.step, .feature, .plan-card) :is(h3, p, li, b, span, .plan-tagline) {
+  color: var(--surface-text) !important;
+}
+body.landing[data-theme] .console :is(.step, .feature, .plan-card) .plan-tagline {
+  color: var(--surface-muted) !important;
+}
+
+body[data-theme] .nav-cta { color: var(--accent-text) !important; background: var(--accent) !important; }
+
+
+/* =========================================================
+   Фон: старый телевизор — экран и часть панели управления
+   ========================================================= */
+body { background: #0a0706 !important; }
+
+.tv-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 40%, #241a15 0%, #120c0a 55%, #070504 100%);
+}
+
+.tv-bezel {
+  position: absolute;
+  inset: 2.2vh 2.4vw;
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 34px;
+  background:
+    linear-gradient(160deg, #3b322c 0%, #241e1a 40%, #171310 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.14),
+    inset 0 -3px 0 rgba(0,0,0,.6),
+    0 30px 70px rgba(0,0,0,.7);
+  border: 1px solid #0c0908;
+}
+
+/* сам экран */
+.tv-screen {
+  position: relative;
+  flex: 1;
+  border-radius: 22px / 26px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 45%, #12241c 0%, #0a1512 45%, #05090a 100%);
+  box-shadow:
+    inset 0 0 90px rgba(0,0,0,.95),
+    inset 0 0 24px rgba(0,0,0,.9),
+    0 0 0 10px #14100d,
+    0 0 0 13px #2b241f;
+}
+.tv-glass {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(125deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.03) 22%, transparent 40%),
+    radial-gradient(ellipse at 22% 12%, rgba(255,255,255,.12) 0%, transparent 45%);
+  mix-blend-mode: screen;
+}
+.tv-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0,0,0,.38) 0 1px,
+    rgba(255,255,255,.035) 1px 3px,
+    transparent 3px 4px
+  );
+  opacity: .55;
+}
+.tv-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%);
+}
+
+/* панель управления справа */
+.tv-controls {
+  width: 96px;
+  flex: 0 0 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 4px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #2e2823, #1b1714);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 0 rgba(0,0,0,.6);
+}
+.tv-knob {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%, #6a5f55 0%, #3a322c 45%, #16120f 100%);
+  box-shadow:
+    inset 0 2px 3px rgba(255,255,255,.25),
+    inset 0 -3px 4px rgba(0,0,0,.7),
+    0 3px 6px rgba(0,0,0,.6);
+  position: relative;
+}
+.tv-knob--big { width: 64px; height: 64px; }
+.tv-knob span {
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  width: 3px;
+  height: 38%;
+  margin-left: -1.5px;
+  background: #d9cbb4;
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(255,255,255,.4);
+}
+.tv-buttons { display: flex; gap: 6px; }
+.tv-buttons i {
+  width: 18px; height: 12px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #5b5048, #2a231e);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 2px 3px rgba(0,0,0,.6);
+}
+.tv-speaker {
+  flex: 1;
+  width: 56px;
+  min-height: 60px;
+  border-radius: 8px;
+  background:
+    repeating-linear-gradient(90deg, #0d0b09 0 3px, transparent 3px 7px),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 2px, transparent 2px 6px);
+  box-shadow: inset 0 0 8px rgba(0,0,0,.8);
+}
+.tv-brand {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 2px;
+  text-align: center;
+  color: #b9a98f;
+  opacity: .8;
+}
+
+/* содержимое — выше телевизора */
+.topbar, .page, .footer { position: relative; z-index: 1; }
+
+@media (max-width: 900px) {
+  .tv-controls { display: none; }
+  .tv-bezel { inset: 8px; padding: 10px; border-radius: 22px; }
+  .tv-screen { border-radius: 14px; }
+}
+
+
+/* =========================================================
+   Меню — кнопки на панели телевизора (справа, статично)
+   ========================================================= */
+.topbar { justify-content: space-between; }
+.topbar-chips { display: flex; align-items: center; gap: 10px; }
+
+.tv-nav {
+  position: fixed;
+  top: 16vh;
+  right: calc(2.4vw + 26px);
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  z-index: 75;
+}
+.tv-nav form { margin: 0; }
+
+.tv-btn {
+  display: block;
+  width: 100%;
+  padding: 9px 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  color: #c9b795;
+  background: linear-gradient(180deg, #3a332c 0%, #221d19 100%);
+  border: 1px solid #0d0a08;
+  border-radius: 4px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .18),
+    inset 0 -1px 0 rgba(0, 0, 0, .5),
+    0 2px 3px rgba(0, 0, 0, .65);
+  cursor: pointer;
+  transition: background .08s linear, color .08s linear;
+}
+.tv-btn:hover {
+  background: linear-gradient(180deg, #473e35 0%, #2a231e 100%);
+  color: #f4e6c8;
+}
+.tv-btn.is-active {
+  color: #ffd9a0;
+  background: linear-gradient(180deg, #16120f 0%, #241d18 100%);
+  box-shadow:
+    inset 0 3px 6px rgba(0, 0, 0, .85),
+    inset 0 -1px 0 rgba(255, 255, 255, .06),
+    0 0 0 rgba(0, 0, 0, 0);
+  transform: translateY(1px);
+}
+.tv-btn--accent { color: #ffd9a0; border-color: #6d4a20; }
+.tv-btn--accent:hover { color: #fff2d0; }
+
+.tv-divider {
+  height: 1px;
+  margin: 2px 4px;
+  background: linear-gradient(90deg, transparent, #5a4c3c, transparent);
+}
+.tv-user {
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.3;
+  text-align: center;
+  color: #b9a98f;
+  opacity: .9;
+  word-break: break-word;
+}
+
+/* панель телевизора шире, чтобы под кнопки */
+.tv-controls { width: 150px; flex: 0 0 150px; }
+.tv-knob { width: 46px; height: 46px; }
+.tv-knob--big { width: 54px; height: 54px; }
+
+/* на небольших экранах меню становится обычной строкой сверху */
+@media (max-width: 1320px) {
+  .tv-nav {
+    position: static;
+    width: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--header-bg);
+    border-bottom: 2px solid var(--accent);
+  }
+  .tv-btn { width: auto; padding: 6px 10px; }
+  .tv-divider, .tv-user { display: none; }
+}
+
+/* кнопки меню не должны наследовать цвет ссылок темы */
+body[data-theme] .tv-btn,
+body[data-theme] .tv-btn:visited { color: #d3c1a0 !important; }
+body[data-theme] .tv-btn:hover { color: #fff1d2 !important; }
+body[data-theme] .tv-btn.is-active { color: #ffd9a0 !important; }
+body[data-theme] .tv-btn--accent { color: #ffd9a0 !important; }
+body[data-theme] .tv-btn.is-active { background: linear-gradient(180deg,#16120f,#241d18) !important; }
+
+/* активная кнопка меню — заметно утопленная */
+body[data-theme] .tv-btn.is-active {
+  background: linear-gradient(180deg, #0a0806 0%, #1b1612 100%) !important;
+  color: #ffcf7a !important;
+  box-shadow:
+    inset 0 4px 9px rgba(0, 0, 0, .95),
+    inset 0 -1px 0 rgba(255, 255, 255, .05) !important;
+}
+
+
+/* =========================================================
+   Марка телевизора в левом верхнем углу корпуса
+   ========================================================= */
+.topbar {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  justify-content: flex-end !important;
+  padding: 12px 24px 0 !important;
+  min-height: 34px;
+}
+
+.tv-brandplate {
+  position: fixed;
+  top: calc(2.2vh + 28px);
+  left: calc(2.4vw + 28px);
+  z-index: 80;
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 16px 7px 18px;
+  font-family: var(--pixel);
+  font-size: 15px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #efe3cb;
+  background:
+    linear-gradient(180deg, #75685a 0%, #4a4138 38%, #2a241f 100%);
+  border: 1px solid #0b0907;
+  border-radius: 3px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .40),
+    inset 0 -2px 0 rgba(0, 0, 0, .65),
+    0 3px 6px rgba(0, 0, 0, .6);
+  text-shadow: 0 1px 0 #000, 0 -1px 0 rgba(255, 255, 255, .18);
+}
+.tv-brandplate span { position: relative; }
+.tv-brandplate::before,
+.tv-brandplate::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #d9d0bf, #5b5248 60%, #241f1a 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 1px 0 rgba(0, 0, 0, .7);
+}
+.tv-brandplate::before { left: 5px; }
+.tv-brandplate::after { right: 5px; }
+.tv-brandplate:hover { color: #fff6e2; }
+
+/* на узких экранах марка меньше */
+@media (max-width: 900px) {
+  .tv-brandplate { top: 10px; left: 10px; font-size: 12px; padding: 5px 12px; }
+}
+
+/* марка и шапка: прозрачная полоса, светлая гравировка */
+body[data-theme] .topbar {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+body[data-theme] .tv-brandplate,
+body[data-theme] .tv-brandplate:visited { color: #f3e7cf !important; }
+body[data-theme] .tv-brandplate:hover { color: #fff8e8 !important; }
+
+/* плашки скина и сборки на корпусе — светлые */
+body[data-theme] :is(.theme-chip, .build-chip) {
+  color: #dccbab !important;
+  border-color: #5a4c3c !important;
+  background: rgba(0, 0, 0, .25) !important;
+}
+/* главная: без лишнего верхнего отступа от корпуса */
+body.landing .console { padding: 0 10px !important; }
+
+
+/* =========================================================
+   Кнопки меню — тёмное серебро, не зависят от скина
+   ========================================================= */
+body[data-theme] .tv-nav .tv-btn,
+body[data-theme] .tv-nav .tv-btn:visited,
+body[data-theme] .tv-nav .tv-btn--accent {
+  color: #e6ebef !important;
+  background: linear-gradient(180deg, #8d949a 0%, #565c62 34%, #3a3f44 62%, #24282c 100%) !important;
+  border: 1px solid #0c0e10 !important;
+  border-radius: 3px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .55),
+    inset 0 -1px 0 rgba(0, 0, 0, .7),
+    0 2px 3px rgba(0, 0, 0, .75) !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, .9) !important;
+  font-weight: 600;
+}
+body[data-theme] .tv-nav .tv-btn:hover {
+  color: #ffffff !important;
+  background: linear-gradient(180deg, #a7aeb4 0%, #6a7177 34%, #484e54 62%, #2c3136 100%) !important;
+}
+body[data-theme] .tv-nav .tv-btn.is-active {
+  color: #f4f8fb !important;
+  background: linear-gradient(180deg, #1b1e21 0%, #292d31 45%, #3a3f44 100%) !important;
+  box-shadow:
+    inset 0 4px 9px rgba(0, 0, 0, .95),
+    inset 0 -1px 0 rgba(255, 255, 255, .18),
+    0 0 0 rgba(0, 0, 0, 0) !important;
+  transform: translateY(1px);
+}
+body[data-theme] .tv-nav .tv-btn:active {
+  background: linear-gradient(180deg, #15181b 0%, #23272b 100%) !important;
+  box-shadow: inset 0 5px 10px rgba(0, 0, 0, .95) !important;
+}
+body[data-theme] .tv-divider {
+  background: linear-gradient(90deg, transparent, #7c838a, transparent) !important;
+}
+body[data-theme] .tv-user { color: #c2c9cf !important; }
+
+/* индикатор у «Регистрации» — красный светодиод, не меняет цвет кнопки */
+body[data-theme] .tv-nav .tv-btn--accent { position: relative; }
+body[data-theme] .tv-nav .tv-btn--accent::after {
+  content: "";
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ff8a7a, #d21b2e 60%, #5a0a12 100%);
+  box-shadow: 0 0 6px rgba(226, 40, 60, .8);
+}
+
+
+/* =========================================================
+   Низ панели: плашки, пользователь и кнопка питания
+   ========================================================= */
+.tv-nav {
+  top: 15vh;
+  bottom: 4.5vh;
+  max-height: none;
+  overflow: visible;
+}
+.tv-nav-bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding-top: 10px;
+}
+.tv-chip {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: .6px;
+  line-height: 1.25;
+  text-align: center;
+  text-transform: uppercase;
+  color: #c8d0d6;
+  background: rgba(10, 12, 14, .55);
+  border: 1px solid #5a6268;
+  border-radius: 2px;
+  padding: 3px 5px;
+  text-shadow: 0 1px 0 #000;
+}
+.tv-chip--build { color: #aeb6bd; font-size: 9px; }
+.tv-user {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 1.3;
+  text-align: center;
+  color: #d8dee3 !important;
+  word-break: break-word;
+}
+.tv-nav-bottom form { margin: 0; display: flex; justify-content: center; padding-top: 6px; }
+
+.tv-power {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid #3a0509;
+  background:
+    radial-gradient(circle at 34% 28%, #ff9a8b 0%, #e02234 38%, #b0121f 70%, #6d0a12 100%);
+  color: #fff3ef;
+  font-family: var(--body);
+  font-size: 24px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, .55),
+    inset 0 -4px 7px rgba(0, 0, 0, .65),
+    0 4px 8px rgba(0, 0, 0, .75),
+    0 0 0 3px rgba(0, 0, 0, .35);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .7);
+}
+.tv-power:hover {
+  background:
+    radial-gradient(circle at 34% 28%, #ffb3a6 0%, #ef3448 40%, #c01524 72%, #7a0c15 100%);
+}
+.tv-power:active {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 5px 12px rgba(0, 0, 0, .85),
+    inset 0 -2px 4px rgba(255, 255, 255, .15),
+    0 1px 2px rgba(0, 0, 0, .7);
+}
+
+@media (max-width: 1320px) {
+  .tv-nav { top: auto; bottom: auto; }
+  .tv-nav-bottom {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-top: 6px;
+    padding-top: 0;
+  }
+  .tv-power { width: 40px; height: 40px; font-size: 18px; }
+  .tv-chip { width: auto; }
+}
+
+
+/* =========================================================
+   СКИН TV (тест): всё вписано в экран кинескопа,
+   рамка ТВ — поверх контента, подвал — на рамке
+   ========================================================= */
+body[data-theme="tv"] {
+  --page-bg: #04070a;
+  --page-text: #e9f6ff;
+  --page-muted: #9fb6c9;
+  --surface: #081018;
+  --surface-2: #0b151e;
+  --surface-text: #e9f6ff;
+  --surface-muted: #9fb6c9;
+  --accent: #3fd0b0;
+  --accent-text: #04120e;
+  --border: #1f4756;
+  --header-bg: #04070a;
+  --header-text: #e9f6ff;
+  --page-image: none;
+  overflow: hidden !important;
+  height: 100vh;
+}
+body[data-theme="tv"] .tv-bezel { display: none !important; }
+body[data-theme="tv"] .tv-bg {
+  background:
+    radial-gradient(ellipse at 50% 45%, #0a1a20 0%, #050a0e 60%, #020405 100%);
+}
+
+/* рамка поверх контента */
+.tv-frame-overlay {
+  position: fixed;
+  top: calc(2.2vh + 22px);
+  left: calc(2.4vw + 22px);
+  right: calc(2.4vw + 186px);
+  bottom: calc(2.2vh + 52px);
+  border: 16px solid #3a332c;
+  border-radius: 26px;
+  box-shadow:
+    0 0 0 3px #0c0908,
+    0 0 0 19px #241e1a,
+    0 0 0 22px #0c0908,
+    inset 0 0 22px rgba(0, 0, 0, .85);
+  pointer-events: none;
+  z-index: 30;
+  display: none;
+}
+body[data-theme="tv"] .tv-frame-overlay { display: block; }
+
+/* страница — ровно внутри экрана */
+body[data-theme="tv"] .page {
+  position: fixed;
+  top: calc(2.2vh + 40px);
+  left: calc(2.4vw + 40px);
+  right: calc(2.4vw + 204px);
+  bottom: calc(2.2vh + 70px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 6px 14px 10px;
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at 50% 45%, #0a1a20 0%, #060d12 70%, #04080b 100%);
+  z-index: 1;
+  scrollbar-width: thin;
+  scrollbar-color: #2a4a55 transparent;
+}
+body[data-theme="tv"] .page::after {
+  content: "";
+  position: fixed;
+  pointer-events: none;
+  top: calc(2.2vh + 40px);
+  left: calc(2.4vw + 40px);
+  right: calc(2.4vw + 204px);
+  bottom: calc(2.2vh + 70px);
+  border-radius: 14px;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .28) 0 1px, transparent 1px 3px);
+  opacity: .35;
+  z-index: 3;
+}
+
+/* внутри экрана — компактно */
+body[data-theme="tv"] .console {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+body[data-theme="tv"] :is(.rail, .joystick, .console-top) { display: none !important; }
+body[data-theme="tv"] .page-head { margin-bottom: 10px; }
+body[data-theme="tv"] .page-head h1 { font-size: 18px; margin: 0 0 2px; }
+body[data-theme="tv"] .page-head .sub { font-size: 13px; }
+body[data-theme="tv"] .section-title { font-size: 17px; margin: 8px 0 4px; }
+body[data-theme="tv"] .section-lead,
+body[data-theme="tv"] .section-note { font-size: 12px; margin: 0 0 8px; }
+
+/* главная в экране */
+body[data-theme="tv"].landing .console { padding: 0 !important; }
+body[data-theme="tv"] .landing-hero--full {
+  min-height: 0 !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) !important;
+  gap: 18px;
+  padding: 0 0 8px;
+}
+body[data-theme="tv"] .landing-hero h1 { font-size: clamp(20px, 2.4vw, 30px); margin: 0 0 6px; }
+body[data-theme="tv"] .hero-lead { font-size: 13px; line-height: 1.35; margin: 0 0 10px; }
+body[data-theme="tv"] .hero-badge { font-size: 10px; padding: 2px 7px; margin-bottom: 6px; }
+body[data-theme="tv"] .hero-actions { margin-bottom: 8px; gap: 8px; }
+body[data-theme="tv"] .btn.big { padding: 7px 14px; font-size: 13px; }
+body[data-theme="tv"] .hero-stats { gap: 16px; }
+body[data-theme="tv"] .hero-stats b { font-size: 18px; }
+body[data-theme="tv"] .hero-stats span { font-size: 11px; }
+body[data-theme="tv"] .hero-shot img { box-shadow: 8px 8px 0 rgba(0,0,0,.4); border-width: 2px; }
+body[data-theme="tv"] .hero-shot-notes { margin-top: 8px; gap: 2px 12px; font-size: 11px; }
+body[data-theme="tv"] .hero-shot-caption { font-size: 11px; margin-top: 4px; }
+body[data-theme="tv"] .steps,
+body[data-theme="tv"] .feature-grid,
+body[data-theme="tv"] .plan-grid { gap: 8px; }
+body[data-theme="tv"] .step,
+body[data-theme="tv"] .feature,
+body[data-theme="tv"] .plan-card,
+body[data-theme="tv"] .about-card { padding: 8px 10px; }
+body[data-theme="tv"] .step h3,
+body[data-theme="tv"] .feature b,
+body[data-theme="tv"] .plan-card h3 { font-size: 13px; }
+body[data-theme="tv"] .step p,
+body[data-theme="tv"] .feature span,
+body[data-theme="tv"] .about-list li { font-size: 12px; line-height: 1.3; }
+body[data-theme="tv"] .plan-price { font-size: 20px; }
+
+/* карточки игр — компактно, 4 в ряд */
+body[data-theme="tv"] .carousel { margin-top: 6px; }
+body[data-theme="tv"] .grid { gap: 10px; }
+body[data-theme="tv"] .grid > .card { flex: 0 0 calc((100% - 30px) / 4) !important; }
+body[data-theme="tv"] .card-title,
+body[data-theme="tv"] .game-title { font-size: 13px; }
+body[data-theme="tv"] .card-body { padding: 8px; }
+body[data-theme="tv"] .btn.small { padding: 5px 8px; font-size: 12px; }
+body[data-theme="tv"] .car-btn { width: 34px; height: 48px; font-size: 22px; }
+
+/* подвал — на рамке ТВ, статичный */
+body[data-theme="tv"] .footer {
+  position: fixed;
+  left: calc(2.4vw + 40px);
+  right: calc(2.4vw + 204px);
+  bottom: calc(2.2vh + 12px);
+  z-index: 35;
+  margin: 0;
+  padding: 2px 8px;
+  background: transparent !important;
+  border: 0 !important;
+  color: #cdbf9f !important;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .5px;
+  text-align: center;
+  text-shadow: 0 1px 0 #000;
+}
+body[data-theme="tv"] .footer span { color: #cdbf9f !important; opacity: 1; }
+body[data-theme="tv"] .footer-copy { display: none; }
+
+/* форма входа и прочие узкие страницы */
+body[data-theme="tv"] .auth-console { margin: 0 auto; max-width: 420px; padding: 10px 14px; }
+body[data-theme="tv"] .auth-console h1 { font-size: 18px; }
+body[data-theme="tv"] :is(.table, .import-list, .build-list) { font-size: 12px; }
+body[data-theme="tv"] .field input,
+body[data-theme="tv"] .field select,
+body[data-theme="tv"] .field textarea { padding: 6px 8px; font-size: 13px; }
+
+/* TV: отступ под марку ТВ и контрастные заглушки обложек */
+body[data-theme="tv"] .page,
+body[data-theme="tv"] .page::after { top: calc(2.2vh + 66px); }
+body[data-theme="tv"] .page { padding-top: 4px; }
+body[data-theme="tv"] .cover.placeholder span { color: #1f6b5d !important; text-shadow: 1px 1px 0 rgba(255,255,255,.35) !important; }
+body[data-theme="tv"] .cover.placeholder { background: #efe0bf !important; }
+body[data-theme="tv"] .admin-strip .btn { font-size: 11px; padding: 5px 8px; }
+
+body[data-theme="tv"] .page,
+body[data-theme="tv"] .page::after { top: calc(2.2vh + 78px); }
+body[data-theme="tv"] .page { padding-top: 12px; }
+body[data-theme="tv"] .page-head h1 { margin-top: 0; }
+
+/* TV: убираем декоративные элементы корпуса и красим заголовки */
+body[data-theme="tv"] .console::before,
+body[data-theme="tv"] .console::after { display: none !important; }
+body[data-theme="tv"] .page-head h1,
+body[data-theme="tv"] .console .page-head h1 {
+  color: var(--surface-text) !important;
+  text-shadow: none !important;
+}
+body[data-theme="tv"] .page-head .sub { color: var(--surface-muted) !important; }
+
+/* кнопки меню: чуть уже и со скруглением */
+body[data-theme] .tv-nav .tv-btn {
+  width: 86% !important;
+  margin: 0 auto !important;
+  border-radius: 11px !important;
+}
+body[data-theme] .tv-nav .tv-btn.is-active { border-radius: 11px !important; }
+.tv-nav .tv-nav-bottom form { width: 100%; }
+
+
+/* =========================================================
+   TV: неоновый кинескоп, белый шум, футуристичные шрифты
+   ========================================================= */
+body[data-theme="tv"] {
+  --page-bg: #7fe9ff;
+  --page-text: #04121c;
+  --page-muted: #0d3a4e;
+  --surface: rgba(238, 252, 255, .94);
+  --surface-2: #d6f5ff;
+  --surface-text: #04121c;
+  --surface-muted: #12455c;
+  --accent: #003a63;
+  --accent-text: #eafcff;
+  --border: #0a6d92;
+  --display: 'Unbounded', 'Bahnschrift', 'Segoe UI', sans-serif;
+  --body: 'Exo 2', 'Bahnschrift', 'Segoe UI', sans-serif;
+  --mono: 'Exo 2', 'Consolas', monospace;
+}
+
+body[data-theme="tv"] .page {
+  background:
+    radial-gradient(ellipse at 50% 42%, #d6faff 0%, #8fe9ff 42%, #3bb6e0 100%);
+  box-shadow:
+    inset 0 0 60px rgba(255, 255, 255, .85),
+    inset 0 0 140px rgba(0, 80, 120, .35);
+  color: #04121c !important;
+}
+body[data-theme="tv"] .page::after {
+  background: repeating-linear-gradient(0deg, rgba(0, 60, 90, .10) 0 1px, transparent 1px 3px);
+  opacity: .5;
+  mix-blend-mode: multiply;
+}
+
+/* белый шум ЭЛТ */
+body[data-theme="tv"] .page::before {
+  content: "";
+  position: fixed;
+  top: calc(2.2vh + 78px);
+  left: calc(2.4vw + 40px);
+  right: calc(2.4vw + 204px);
+  bottom: calc(2.2vh + 70px);
+  border-radius: 14px;
+  pointer-events: none;
+  z-index: 4;
+  opacity: .16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.6'/></svg>");
+  background-size: 140px 140px;
+  animation: tv-noise .45s steps(3) infinite;
+}
+@keyframes tv-noise {
+  0% { background-position: 0 0; }
+  33% { background-position: -35px 20px; }
+  66% { background-position: 25px -30px; }
+  100% { background-position: 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-theme="tv"] .page::before { animation: none; }
+}
+
+/* шрифты и контраст внутри экрана */
+body[data-theme="tv"] :is(h1, h2, h3, .section-title, .page-head h1, .card-title,
+                          .game-title, .plan-price, .hero-stats b) {
+  font-family: var(--display) !important;
+  letter-spacing: .3px;
+}
+body[data-theme="tv"] :is(p, li, span, label, td, th, small, .meta, .sub,
+                          .field-hint, .section-lead, .section-note, .card-desc) {
+  font-family: var(--body) !important;
+}
+body[data-theme="tv"] .console,
+body[data-theme="tv"] .console :is(h1, h2, h3, h4, p, li, span, strong, b, small, label, td, th) {
+  color: #04121c !important;
+}
+body[data-theme="tv"] .console :is(.meta, .muted, .field-hint, .sub, .game-meta,
+                                   .card-desc, .plan-tagline, .section-lead, .section-note) {
+  color: #12455c !important;
+  opacity: 1;
+}
+
+/* карточки — светящиеся панели */
+body[data-theme="tv"] :is(.panel, .card, .step, .feature, .plan-card, .about-card,
+                          .drafts, .import-item, .build-item, .exe-item, .hint,
+                          .profile-card, .settings-block, .admin-strip) {
+  background: rgba(240, 253, 255, .92) !important;
+  border: 1px solid #0a6d92 !important;
+  color: #04121c !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .7), 0 6px 18px rgba(0, 80, 120, .18);
+}
+
+/* кнопки внутри экрана */
+body[data-theme="tv"] .console .btn.primary {
+  background: #003a63 !important;
+  color: #eafcff !important;
+  border-color: #002a48 !important;
+}
+body[data-theme="tv"] .console .btn:not(.primary) {
+  background: rgba(255, 255, 255, .55) !important;
+  color: #04121c !important;
+  border-color: #0a6d92 !important;
+}
+body[data-theme="tv"] .console :is(input, select, textarea) {
+  background: rgba(255, 255, 255, .9) !important;
+  color: #04121c !important;
+  border: 1px solid #0a6d92 !important;
+}
+
+/* главная — тёмный текст на голубом неоне */
+body.landing[data-theme="tv"] :is(.landing-hero h1, .hero-lead, .hero-stats b,
+                                  .hero-stats span, .hero-shot-notes li,
+                                  .hero-shot-caption, .section-title, .section-lead,
+                                  .section-note, .landing-cta h2, .landing-cta p) {
+  color: #04121c !important;
+}
+body.landing[data-theme="tv"] :is(.hero-lead, .section-lead, .section-note, .hero-shot-caption) {
+  color: #12455c !important;
+}
+body[data-theme="tv"] .hero-badge {
+  background: #003a63 !important;
+  color: #eafcff !important;
+  border-color: #002a48 !important;
+}
+
+/* TV: усиленный контраст мелкого текста */
+body[data-theme="tv"] :is(.meta, .muted, .field-hint, .sub, .game-meta, .card-desc,
+  .plan-tagline, .section-lead, .section-note, .hero-shot-caption, .hero-lead) {
+  color: #0a2f42 !important;
+  opacity: 1 !important;
+}
+body[data-theme="tv"] .page::before { opacity: .10; }
+
+
+/* =========================================================
+   TV: экран максимально растянут до краёв кинескопа
+   ========================================================= */
+body[data-theme="tv"] .page,
+body[data-theme="tv"] .page::after,
+body[data-theme="tv"] .page::before {
+  top: calc(2.2vh + 24px);
+  left: calc(2.4vw + 24px);
+  right: calc(2.4vw + 176px);
+  bottom: calc(2.2vh + 30px);
+}
+body[data-theme="tv"] .page {
+  padding: 8px 12px 6px;
+  border-radius: 12px;
+}
+
+/* тонкая рамка точно по границе экрана */
+body[data-theme="tv"] .tv-frame-overlay {
+  top: calc(2.2vh + 12px);
+  left: calc(2.4vw + 12px);
+  right: calc(2.4vw + 164px);
+  bottom: calc(2.2vh + 18px);
+  border-width: 10px;
+  border-radius: 18px;
+  box-shadow:
+    0 0 0 2px #0c0908,
+    0 0 0 12px #241e1a,
+    0 0 0 14px #0c0908,
+    inset 0 0 16px rgba(0, 0, 0, .8);
+}
+
+/* марка — компактнее, на верхней кромке корпуса */
+body[data-theme="tv"] .tv-brandplate {
+  top: calc(2.2vh + 2px);
+  left: calc(2.4vw + 20px);
+  font-size: 11px;
+  padding: 3px 10px;
+  letter-spacing: 2px;
+}
+
+/* подвал — на нижней кромке рамки */
+body[data-theme="tv"] .footer {
+  left: calc(2.4vw + 24px);
+  right: calc(2.4vw + 176px);
+  bottom: calc(2.2vh + 6px);
+  font-size: 9px;
+  padding: 1px 6px;
+}
+
+/* внутри экрана — минимум отступов */
+body[data-theme="tv"] .page-head { margin-bottom: 6px; }
+body[data-theme="tv"] .landing-hero--full { gap: 12px; padding-bottom: 4px; }
+
+/* марка ТВ компактно на верхней кромке */
+body[data-theme="tv"] .tv-brandplate {
+  top: calc(2.2vh + 3px);
+  left: calc(2.4vw + 16px);
+  font-size: 9.5px;
+  line-height: 1;
+  padding: 3px 9px;
+  letter-spacing: 1.5px;
+  border-radius: 2px;
+}
+body[data-theme="tv"] .tv-brandplate::before,
+body[data-theme="tv"] .tv-brandplate::after { width: 4px; height: 4px; }
+
+
+/* =========================================================
+   Имя сайта — золотая табличка над меню
+   ========================================================= */
+body[data-theme] .tv-brandplate { display: none !important; }
+
+body[data-theme] .tv-nav .tv-brand {
+  display: block;
+  width: 86%;
+  margin: 0 auto 8px;
+  padding: 8px 4px;
+  text-align: center;
+  text-decoration: none;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: #f2cd74;
+  background:
+    linear-gradient(180deg, #4a4034 0%, #2a231c 45%, #171310 100%);
+  border: 1px solid #0c0908;
+  border-radius: 4px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 235, 190, .28),
+    inset 0 -2px 0 rgba(0, 0, 0, .7),
+    0 2px 4px rgba(0, 0, 0, .7);
+  text-shadow:
+    0 0 6px rgba(242, 205, 116, .45),
+    0 1px 0 rgba(0, 0, 0, .9),
+    0 -1px 0 rgba(255, 240, 200, .25);
+}
+body[data-theme] .tv-nav .tv-brand:hover {
+  color: #ffdc8a;
+  text-shadow:
+    0 0 10px rgba(255, 220, 140, .7),
+    0 1px 0 rgba(0, 0, 0, .9);
+}
+
+@media (max-width: 1320px) {
+  body[data-theme] .tv-nav .tv-brand { width: auto; padding: 6px 12px; margin: 0 4px 0 0; }
+}
+
+/* золотая табличка — принудительный контраст */
+body[data-theme] .tv-nav .tv-brand,
+body[data-theme] .tv-nav .tv-brand:visited {
+  color: #ffd166 !important;
+  background: linear-gradient(180deg, #3a2f24 0%, #221a13 50%, #120e0a 100%) !important;
+  border-color: #0a0705 !important;
+  font-size: 13px !important;
+  opacity: 1 !important;
+  z-index: 76;
+}
+body[data-theme] .tv-nav .tv-brand:hover { color: #ffe39a !important; }
+
+
+/* =========================================================
+   TV: контент ровно в «окне» фонового кинескопа
+   ========================================================= */
+body[data-theme="tv"] .tv-bezel {
+  display: flex !important;
+  padding: 18px 18px 38px;
+}
+body[data-theme="tv"] .tv-controls {
+  width: 150px;
+  flex: 0 0 150px;
+  padding: 0;
+  background: linear-gradient(180deg, #2b2521 0%, #1a1613 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), inset 0 -2px 0 rgba(0, 0, 0, .6);
+}
+body[data-theme="tv"] .tv-controls > * { display: none !important; }
+
+/* сам кинескоп — неоновый, как светящийся экран */
+body[data-theme="tv"] .tv-screen {
+  background:
+    radial-gradient(ellipse at 50% 42%, #dffaff 0%, #93ecff 42%, #41b9e2 100%);
+  box-shadow:
+    inset 0 0 70px rgba(255, 255, 255, .9),
+    inset 0 0 150px rgba(0, 80, 120, .35),
+    0 0 0 10px #14100d,
+    0 0 0 13px #2b241f;
+}
+body[data-theme="tv"] .tv-screen::after {
+  background: radial-gradient(ellipse at center, transparent 62%, rgba(0, 50, 80, .35) 100%);
+}
+body[data-theme="tv"] .tv-glass { opacity: .8; }
+body[data-theme="tv"] .tv-scanlines { opacity: .35; }
+
+/* отдельная нарисованная рамка больше не нужна — её роль играет корпус */
+body[data-theme="tv"] .tv-frame-overlay { display: none !important; }
+
+/* страница = ровно окно кинескопа */
+body[data-theme="tv"] .page,
+body[data-theme="tv"] .page::after,
+body[data-theme="tv"] .page::before {
+  top: calc(2.2vh + 18px);
+  left: calc(2.4vw + 18px);
+  right: calc(2.4vw + 182px);
+  bottom: calc(2.2vh + 38px);
+}
+body[data-theme="tv"] .page {
+  padding: 10px 14px 8px;
+  border-radius: 14px;
+  background: transparent;
+  box-shadow: none;
+}
+body[data-theme="tv"] .page::before { opacity: .12; }
+
+/* подвал — на нижней кромке корпуса */
+body[data-theme="tv"] .footer {
+  left: calc(2.4vw + 24px);
+  right: calc(2.4vw + 182px);
+  bottom: calc(2.2vh + 10px);
+  font-size: 9px;
+  color: #cdbf9f !important;
+}
+
+/* TV: страница на всю голубую площадь экрана, 5 карточек в карусели */
+body[data-theme="tv"] .page,
+body[data-theme="tv"] .page::before,
+body[data-theme="tv"] .page::after {
+  top: calc(2.2vh + 23px);
+  left: calc(2.4vw + 18px);
+  right: calc(2.4vw + 167px);
+  bottom: calc(2.2vh + 33px);
+}
+body[data-theme="tv"] .page { padding: 6px 10px 6px 8px; border-radius: 10px; }
+body[data-theme="tv"] .grid { gap: 10px; }
+body[data-theme="tv"] .grid > .card { flex: 0 0 calc((100% - 40px) / 5) !important; }
+body[data-theme="tv"] .car-btn { width: 30px; height: 44px; font-size: 20px; }
+body[data-theme="tv"] .footer { right: calc(2.4vw + 167px); }
+
+/* TV: стрелки карусели внутри экрана, не обрезаются */
+body[data-theme="tv"] .car-prev { left: 2px !important; }
+body[data-theme="tv"] .car-next { right: 2px !important; }
+body[data-theme="tv"] .car-btn {
+  width: 28px; height: 46px; font-size: 20px;
+  opacity: .85;
+  border-radius: 8px;
+}
+body[data-theme="tv"] .car-btn:hover { opacity: 1; }
+
+/* TV: содержимое страниц — на всю ширину экрана */
+body[data-theme="tv"] .page {
+  padding: 5px 15px 5px 0 !important;
+}
+body[data-theme="tv"] .page > * { max-width: none !important; }
+body[data-theme="tv"] .page :is(.upload-form, .setup-form, .auth-form, .hint, .panel,
+  .about-card, .about-grid, .admin-grid, .import-list, .build-list, .game-page, .game-hero,
+  .settings-block, .profile-card, .drafts, .admin-strip) {
+  max-width: none !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+body[data-theme="tv"] .page :is(.page-head, .landing-section, .landing-cta) { padding-left: 0 !important; }
+body[data-theme="tv"] .console { width: 100% !important; }
+
+/* TV: страница без ограничения ширины, до правого края кинескопа */
+body[data-theme="tv"] .page {
+  max-width: none !important;
+  width: auto !important;
+  margin: 0 !important;
+  right: calc(2.4vw + 258px) !important;
+  left: calc(2.4vw + 16px) !important;
+}
+body[data-theme="tv"] .page::before,
+body[data-theme="tv"] .page::after {
+  right: calc(2.4vw + 258px) !important;
+  left: calc(2.4vw + 16px) !important;
+}
+body[data-theme="tv"] .console { max-width: none !important; width: 100% !important; }
+body[data-theme="tv"] .footer { right: calc(2.4vw + 258px) !important; }
+
+/* TV: сдвиг содержимого на 8 px вправо */
+body[data-theme="tv"] .page {
+  left: calc(2.4vw + 24px) !important;
+}
+body[data-theme="tv"] .page::before,
+body[data-theme="tv"] .page::after {
+  left: calc(2.4vw + 24px) !important;
+}
+body[data-theme="tv"] .footer { left: calc(2.4vw + 32px) !important; }
+
+/* TV: ещё +15 px вправо */
+body[data-theme="tv"] .page { left: calc(2.4vw + 39px) !important; }
+body[data-theme="tv"] .page::before,
+body[data-theme="tv"] .page::after { left: calc(2.4vw + 39px) !important; }
+body[data-theme="tv"] .footer { left: calc(2.4vw + 47px) !important; }
+
+/* TV: корпус всегда виден (в т.ч. после выхода из игры) */
+body[data-theme="tv"] { background: transparent !important; }
+html:has(body[data-theme="tv"]) { background: #05080b !important; }
+body[data-theme="tv"] .tv-bg { z-index: 0 !important; }
+body[data-theme="tv"] .tv-bezel { display: flex !important; }
+body[data-theme="tv"] .page { z-index: 2 !important; }
+body[data-theme="tv"] .topbar { z-index: 70 !important; }
+body[data-theme="tv"] .tv-nav { z-index: 75 !important; }
+body[data-theme="tv"] .footer { z-index: 76 !important; }
+body[data-theme="tv"] .tv-bg { pointer-events: none; }
+
+/* TV: поднимаем содержимое и подвал на 10 px от нижней кромки */
+body[data-theme="tv"] .page,
+body[data-theme="tv"] .page::before,
+body[data-theme="tv"] .page::after {
+  bottom: calc(2.2vh + 43px) !important;
+}
+body[data-theme="tv"] .footer {
+  bottom: calc(2.2vh + 20px) !important;
+}
+
+/* TV: заголовки страниц и секций по центру */
+body[data-theme="tv"] :is(.page-head, .page-head h1, .page-head .sub, .section-title) {
+  text-align: center !important;
+}
+body[data-theme="tv"] .page-head { margin-bottom: 8px; }
+
+
+/* =========================================================
+   TV: жизнь кинескопа — мерцание, горячий край, LED, выключение
+   ========================================================= */
+@keyframes crt-flicker {
+  0%, 100% { filter: brightness(1); }
+  47% { filter: brightness(1.018); }
+  52% { filter: brightness(.992); }
+}
+@keyframes crt-edge-glow {
+  0%, 100% { opacity: .32; }
+  50% { opacity: .62; }
+}
+@keyframes led-pulse {
+  0%, 100% { opacity: .7; }
+  50% { opacity: 1; }
+}
+
+body[data-theme="tv"] .tv-screen { animation: crt-flicker 5.6s ease-in-out infinite; }
+body[data-theme="tv"] .tv-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 26px rgba(190, 250, 255, .55),
+    inset 0 0 90px rgba(60, 190, 230, .38),
+    inset 0 0 18px rgba(255, 255, 255, .35);
+  animation: crt-edge-glow 7s ease-in-out infinite;
+}
+
+/* светодиод питания */
+.tv-led {
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: 2px auto 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #d8ffe2, #27c95a 55%, #0a5a24);
+  box-shadow: 0 0 8px rgba(70, 255, 130, .85), inset 0 0 2px rgba(255, 255, 255, .9);
+  animation: led-pulse 3.4s ease-in-out infinite;
+}
+
+/* выключение «как у телевизора» */
+@keyframes crt-off {
+  0% { transform: scale(1, 1); filter: brightness(1); }
+  55% { transform: scale(1.05, .012); filter: brightness(2.4); }
+  100% { transform: scale(.65, 0); filter: brightness(0); }
+}
+body.tv-off { overflow: hidden; }
+body.tv-off .tv-screen { animation: crt-off .42s cubic-bezier(.6, .05, .9, .5) forwards; }
+body.tv-off :is(.page, .tv-nav, .footer, .topbar) { opacity: 0; transition: opacity .2s .12s; }
+body.tv-off .tv-led {
+  background: #3a0b0b;
+  box-shadow: none;
+  animation: none;
+}
+body.tv-off .tv-power {
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, .8), inset 0 -1px 0 rgba(255, 255, 255, .1);
+}
+.tv-off-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: #eaffff;
+  opacity: 0;
+}
+body.tv-off .tv-off-flash { animation: tv-flash .45s ease-out forwards; }
+@keyframes tv-flash {
+  0% { opacity: 0; }
+  35% { opacity: .75; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-theme="tv"] .tv-screen,
+  body[data-theme="tv"] .tv-screen::before,
+  .tv-led { animation: none; }
+  body.tv-off .tv-screen { animation: none; }
+}
+
+
+/* =========================================================
+   TV: терминал входа — тёмный кинескоп с зелёным курсором
+   ========================================================= */
+body[data-theme="tv"] .auth-wrap { min-height: 70vh; display: flex; align-items: center; justify-content: center; }
+body[data-theme="tv"] .term-console {
+  width: min(780px, 100%);
+  margin: 6px auto;
+  padding: 0;
+  background: #020c07 !important;
+  border: 3px solid #1f7a42 !important;
+  border-radius: 14px;
+  box-shadow:
+    inset 0 0 80px rgba(20, 120, 60, .35),
+    inset 0 0 20px rgba(0, 0, 0, .9),
+    0 0 30px rgba(40, 220, 120, .18),
+    0 10px 30px rgba(0, 0, 0, .6) !important;
+  color: #58ff96;
+  font-family: 'Exo 2', 'Consolas', monospace;
+  overflow: hidden;
+  position: relative;
+}
+body[data-theme="tv"] .term-console::before { content: none !important; }
+body[data-theme="tv"] .term-console::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .35) 0 1px, transparent 1px 3px);
+  opacity: .55;
+  z-index: 3;
+}
+body[data-theme="tv"] .term-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 14px;
+  background: #04170d;
+  border-bottom: 1px solid #1f7a42;
+  color: #7dffb0;
+  font-size: 11px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  font-family: 'Exo 2', monospace;
+}
+body[data-theme="tv"] .term-head-right { display: inline-flex; align-items: center; gap: 8px; opacity: .85; }
+body[data-theme="tv"] .term-led {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #37e07a;
+  box-shadow: 0 0 7px rgba(60, 255, 140, .9);
+  animation: term-led 2.8s ease-in-out infinite;
+  display: inline-block;
+}
+@keyframes term-led { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+
+body[data-theme="tv"] .term-body {
+  padding: 18px 20px 14px;
+  min-height: 430px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(30, 180, 90, .10) 0%, transparent 70%),
+    #020c07;
+  outline: none;
+  z-index: 1;
+  position: relative;
+}
+body[data-theme="tv"] .term-out {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: 'Exo 2', 'Consolas', monospace;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #4beb84;
+  text-shadow: 0 0 5px rgba(60, 255, 130, .45);
+}
+body[data-theme="tv"] .term-warn { color: #ff6b5e; text-shadow: 0 0 6px rgba(255, 90, 70, .5); }
+body[data-theme="tv"] .term-ok { color: #8dffbe; }
+
+body[data-theme="tv"] .term-form { margin: 0; display: block; }
+body[data-theme="tv"] .term-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-family: 'Exo 2', 'Consolas', monospace;
+  font-size: 17px;
+  color: #7dffb0;
+}
+body[data-theme="tv"] .term-line.is-locked { opacity: .35; }
+body[data-theme="tv"] .term-prompt { color: #7dffb0; text-shadow: 0 0 6px rgba(60, 255, 130, .4); }
+body[data-theme="tv"] .term-input {
+  flex: 1;
+  min-width: 0;
+  border: 0 !important;
+  background: transparent !important;
+  color: #c8ffdd !important;
+  font-family: 'Exo 2', 'Consolas', monospace !important;
+  font-size: 17px !important;
+  letter-spacing: 1px;
+  outline: none;
+  caret-color: #58ff96;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+body[data-theme="tv"] .term-input:disabled { color: #2f7a4e !important; }
+body[data-theme="tv"] .term-input:-webkit-autofill {
+  -webkit-text-fill-color: #c8ffdd;
+  -webkit-box-shadow: 0 0 0 1000px #020c07 inset;
+}
+body[data-theme="tv"] .term-cursor {
+  width: 10px;
+  height: 19px;
+  background: #58ff96;
+  box-shadow: 0 0 8px rgba(60, 255, 130, .8);
+  animation: term-blink 1s steps(2) infinite;
+  flex: 0 0 auto;
+}
+body[data-theme="tv"] .term-line:focus-within .term-cursor { opacity: .25; }
+@keyframes term-blink { 50% { opacity: 0; } }
+
+body[data-theme="tv"] .term-status {
+  margin-top: 14px;
+  font-family: 'Exo 2', monospace;
+  font-size: 12px;
+  letter-spacing: .6px;
+  color: #3f9e66;
+  min-height: 18px;
+}
+body[data-theme="tv"] .term-status.is-error { color: #ff6b5e; }
+body[data-theme="tv"] .term-status.is-busy { color: #b7ffcf; animation: term-busy 1s steps(2) infinite; }
+@keyframes term-busy { 50% { opacity: .45; } }
+body[data-theme="tv"] .term-submit { display: none !important; }
+
+body[data-theme="tv"] .term-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  border-top: 1px solid #14522e;
+  background: #03130a;
+  font-family: 'Exo 2', monospace;
+  font-size: 12px;
+  letter-spacing: .5px;
+}
+body[data-theme="tv"] .term-foot a { color: #58ff96 !important; text-decoration: none; }
+body[data-theme="tv"] .term-foot a:hover { color: #b7ffcf !important; text-shadow: 0 0 8px rgba(90, 255, 150, .6); }
+
+@media (max-width: 720px) {
+  body[data-theme="tv"] .term-body { min-height: 360px; padding: 14px; }
+  body[data-theme="tv"] .term-out { font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-theme="tv"] .term-cursor,
+  body[data-theme="tv"] .term-led,
+  body[data-theme="tv"] .term-status.is-busy { animation: none; }
+}
+
+/* терминал: финальные штрихи — прозрачные строки и яркий зелёный */
+body[data-theme="tv"] .term-console { width: min(860px, 100%); }
+body[data-theme="tv"] .term-console .term-body { min-height: 460px; }
+body[data-theme="tv"] .term-console .term-input,
+body[data-theme="tv"] .term-console .term-input:focus {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #d6ffe6 !important;
+  padding: 0 !important;
+}
+body[data-theme="tv"] .term-console .term-input:disabled { color: #2f7a4e !important; }
+body[data-theme="tv"] .term-console .term-prompt { color: #8dffbe !important; text-shadow: 0 0 8px rgba(70, 255, 140, .55); }
+body[data-theme="tv"] .term-console .term-line { color: #8dffbe !important; }
+body[data-theme="tv"] .term-console .term-out { color: #5cf58f !important; }
+body[data-theme="tv"] .term-console .term-status { color: #4fc47c !important; }
+body[data-theme="tv"] .term-console .term-status.is-error { color: #ff7b6e !important; }
+body[data-theme="tv"] .term-console .term-foot a { color: #58ff96 !important; }
+body[data-theme="tv"] .term-console .term-foot { font-size: 13px; }
+
+/* терминал: максимальная специфичность для строк ввода */
+body[data-theme="tv"] #term-console .term-line { color: #b6ffd0 !important; border-bottom: 1px dashed rgba(90, 255, 150, .18); padding-bottom: 4px; }
+body[data-theme="tv"] #term-console .term-prompt { color: #b6ffd0 !important; font-weight: 600; text-shadow: 0 0 6px rgba(90, 255, 150, .5) !important; }
+body[data-theme="tv"] #term-console .term-input { color: #eafff2 !important; background: transparent !important; border: 0 !important; -webkit-text-fill-color: #eafff2; }
+body[data-theme="tv"] #term-console .term-input:disabled { color: #2f7a4e !important; -webkit-text-fill-color: #2f7a4e; }
+body[data-theme="tv"] #term-console .term-cursor { background: #7dffb0; box-shadow: 0 0 10px rgba(90, 255, 150, .9); }
+body[data-theme="tv"] #term-console .term-status { color: #6fe39a !important; }
+body[data-theme="tv"] #term-console .term-status.is-error { color: #ff8375 !important; }
+body[data-theme="tv"] #term-console .term-out { color: #6cf59a !important; }
+body[data-theme="tv"] #term-console .term-foot a { color: #7dffb0 !important; }
+body[data-theme="tv"] #term-console .term-foot { color: #4fc47c !important; }
+
+/* терминал: нативная каретка вместо блочного курсора */
+body[data-theme="tv"] #term-console .term-cursor { display: none !important; }
+body[data-theme="tv"] #term-console .term-input { caret-color: #7dffb0; font-size: 18px !important; }
+body[data-theme="tv"] #term-console .term-line { margin-top: 16px; }
+
+/* кнопка питания у гостя: на месте, но неактивна */
+body[data-theme] .tv-power:disabled,
+body[data-theme] .tv-power[disabled] {
+  cursor: not-allowed;
+  filter: grayscale(.55) brightness(.6);
+  opacity: .85;
+  box-shadow:
+    inset 0 3px 6px rgba(0, 0, 0, .85),
+    inset 0 -1px 0 rgba(255, 255, 255, .12),
+    0 2px 4px rgba(0, 0, 0, .5);
+  transform: none;
+}
+body[data-theme] .tv-power:disabled:hover { filter: grayscale(.55) brightness(.6); }
+body[data-theme] .tv-led.is-off {
+  background: #3a0b0b;
+  box-shadow: none;
+  animation: none;
+  opacity: .9;
+}
+
+/* терминал входа — на весь экран кинескопа */
+body.is-auth[data-theme="tv"] .page { overflow: hidden !important; }
+body.is-auth[data-theme="tv"] .console { height: 100% !important; }
+body.is-auth[data-theme="tv"] .auth-wrap { min-height: 0 !important; height: 100% !important; display: flex; }
+body.is-auth[data-theme="tv"] .term-console {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: inset 0 0 140px rgba(0, 0, 0, .95) !important;
+  background: #030a06 !important;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+body.is-auth[data-theme="tv"] .term-head { display: none !important; }
+body.is-auth[data-theme="tv"] .term-body {
+  flex: 1;
+  min-height: 0 !important;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 34px 22px !important;
+  background: transparent !important;
+}
+body.is-auth[data-theme="tv"] .term-out { font-size: 18px; line-height: 1.5; }
+body.is-auth[data-theme="tv"] .term-form { margin-top: auto; }
+body.is-auth[data-theme="tv"] .term-line {
+  font-size: 24px;
+  margin-top: 10px;
+  border-bottom: 0 !important;
+  padding-bottom: 0;
+}
+body.is-auth[data-theme="tv"] .term-prompt { font-size: 24px; }
+body.is-auth[data-theme="tv"] .term-input { font-size: 24px !important; height: 32px; }
+body.is-auth[data-theme="tv"] .term-status { font-size: 13px; margin-top: 6px; }
+body.is-auth[data-theme="tv"] .term-foot {
+  position: absolute;
+  right: 26px;
+  bottom: 18px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 12px;
+  display: flex;
+  gap: 18px;
+  opacity: .85;
+}
+body.is-auth[data-theme="tv"] .term-foot a { text-decoration: none; }
+body.is-auth[data-theme="tv"] .flash { margin: 0; }
+
+/* терминал входа: во всю ширину и без наложений внизу */
+body.is-auth[data-theme="tv"] .auth-wrap { width: 100% !important; }
+body.is-auth[data-theme="tv"] .term-console {
+  width: 100% !important;
+  max-width: none !important;
+  flex: 1 1 auto;
+}
+body.is-auth[data-theme="tv"] .term-body { padding: 26px 34px 56px !important; }
+body.is-auth[data-theme="tv"] .term-foot {
+  right: 26px;
+  bottom: 16px;
+  background: transparent;
+}
+
+/* терминал входа: ровно по площади кинескопа */
+body.is-auth[data-theme="tv"] .term-console {
+  position: fixed !important;
+  top: calc(2.2vh + 18px) !important;
+  left: calc(2.4vw + 18px) !important;
+  right: calc(2.4vw + 186px) !important;
+  bottom: calc(2.2vh + 38px) !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 12px !important;
+  z-index: 3;
+}
+body.is-auth[data-theme="tv"] .term-foot { right: 18px; bottom: 12px; }
+body.is-auth[data-theme="tv"] .term-body { padding: 22px 28px 44px !important; }
+
+/* терминал: загрузочные строки прямо перед Login/Pass */
+body.is-auth[data-theme="tv"] .term-out { margin-top: auto !important; }
+body.is-auth[data-theme="tv"] .term-form { margin-top: 18px !important; }
+body.is-auth[data-theme="tv"] .term-body { padding-bottom: 56px !important; }
+
+/* терминал: статичные строки, ссылки и подвал внутри тела */
+body.is-auth[data-theme="tv"] .term-static { color: #d6ffe6 !important; font-size: 18px; }
+body.is-auth[data-theme="tv"] .term-link { color: #7dffb0 !important; word-break: break-all; }
+body.is-auth[data-theme="tv"] .term-body .term-foot {
+  position: static;
+  margin-top: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+body.is-auth[data-theme="tv"] .term-line { margin-top: 12px; }
+body.is-auth[data-theme="tv"] .term-form { margin-top: 14px !important; }
+
+/* терминалы регистрации и подтверждения — те же яркие цвета */
+body.is-auth[data-theme="tv"] .term-console .term-line,
+body.is-auth[data-theme="tv"] .term-console .term-prompt { color: #b6ffd0 !important; }
+body.is-auth[data-theme="tv"] .term-console .term-prompt { font-weight: 600; text-shadow: 0 0 6px rgba(90, 255, 150, .5) !important; }
+body.is-auth[data-theme="tv"] .term-console .term-input { color: #eafff2 !important; -webkit-text-fill-color: #eafff2; background: transparent !important; border: 0 !important; }
+body.is-auth[data-theme="tv"] .term-console .term-input:disabled { color: #2f7a4e !important; -webkit-text-fill-color: #2f7a4e; }
+body.is-auth[data-theme="tv"] .term-console .term-out { color: #6cf59a !important; }
+body.is-auth[data-theme="tv"] .term-console .term-status { color: #6fe39a !important; }
+body.is-auth[data-theme="tv"] .term-console .term-status.is-error { color: #ff8375 !important; }
+body.is-auth[data-theme="tv"] .term-console .term-foot a { color: #7dffb0 !important; }
+body.is-auth[data-theme="tv"] .term-console .term-foot { color: #4fc47c !important; }
+body.is-auth[data-theme="tv"] .term-console .term-warn { color: #ff6b5e !important; }
+body.is-auth[data-theme="tv"] .term-console .term-ok { color: #8dffbe !important; }
+body.is-auth[data-theme="tv"] .term-console .term-link { color: #7dffb0 !important; }
+body.is-auth[data-theme="tv"] .term-console .term-static { color: #d6ffe6 !important; }
+
+/* кнопка питания гостя — по центру, как у авторизованного */
+body[data-theme] .tv-nav-bottom > .tv-power {
+  display: block;
+  margin: 6px auto 0;
+  flex: 0 0 auto;
+  align-self: center;
+}
+body[data-theme] .tv-nav-bottom > .tv-led {
+  margin: 2px auto 4px;
+  align-self: center;
+}
+body[data-theme] .tv-nav-bottom > form {
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+}
+
+
+/* =========================================================
+   Авторство в подвале и табличка на верхней кромке ТВ
+   ========================================================= */
+.footer-left { display: inline-flex; flex-direction: column; gap: 1px; }
+.footer-credit { opacity: .9; }
+.footer-link { color: inherit !important; text-decoration: underline; }
+body[data-theme="tv"] .footer-link,
+body[data-theme="tv"] .footer-credit a { color: #e8c46a !important; }
+body[data-theme="tv"] .footer-left { gap: 0; }
+
+/* RETRO GAMES — к верхнему краю рамки, 10 px от границы */
+body[data-theme] .tv-nav .tv-brand {
+  position: fixed;
+  top: calc(2.2vh + 10px);
+  right: calc(2.4vw + 36px);
+  width: 129px;
+  margin: 0;
+  z-index: 76;
+}
+@media (max-width: 1320px) {
+  body[data-theme] .tv-nav .tv-brand {
+    position: static;
+    width: auto;
+    margin: 0 4px 0 0;
+  }
+}
+
+/* подвал: две строки читаемо, на кромке корпуса */
+body[data-theme="tv"] .footer {
+  bottom: calc(2.2vh + 6px) !important;
+  font-size: 10px !important;
+  line-height: 1.25;
+  color: #e8d7b6 !important;
+}
+body[data-theme="tv"] .footer span,
+body[data-theme="tv"] .footer-copy { color: #e8d7b6 !important; opacity: 1; }
+body[data-theme="tv"] .footer-left { display: flex; flex-direction: column; gap: 0; }
+body[data-theme="tv"] .footer-credit { color: #f2cd74 !important; }
+body[data-theme="tv"] .footer-credit a { color: #ffd97a !important; text-decoration: underline; }
+
+.apps-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.apps-grid .about-card { height: 100%; }
+@media (max-width: 900px) { .apps-grid { grid-template-columns: 1fr; } }
+
+/* ошибка бандла и сброс кэша */
+.player-error {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border: 1px solid #c25a3a;
+  border-radius: 8px;
+  background: rgba(80, 20, 10, .35);
+  color: #ffd9c9;
+  font-size: 14px;
+}
+.player-error p { margin: 0 0 8px; }
+.player-error .btn { font-size: 13px; }
+
+/* страница игры: кнопки в цветах ТВ-темы (тёмные на голубом экране) */
+body[data-theme="tv"] .game-page .btn.ghost,
+body[data-theme="tv"] .game-page .admin-actions .btn,
+body[data-theme="tv"] .game-page .back-link {
+  background: #063a4d !important;
+  color: #eafff2 !important;
+  border: 2px solid #022330 !important;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .35) !important;
+}
+body[data-theme="tv"] .game-page .btn.ghost:hover,
+body[data-theme="tv"] .game-page .admin-actions .btn:hover,
+body[data-theme="tv"] .game-page .back-link:hover {
+  background: #0a5069 !important;
+  color: #ffffff !important;
+}
+body[data-theme="tv"] .game-page .btn.primary {
+  background: #003a63 !important;
+  color: #eafcff !important;
+  border: 2px solid #012537 !important;
+}
+
+/* кнопки внутри модалки плеера — читаемые на тёмном баре */
+body[data-theme="tv"] .play-modal .play-actions .btn,
+body[data-theme="tv"] .play-modal .play-bar .btn,
+body[data-theme="tv"] .play-modal .play-actions a {
+  background: #063a4d !important;
+  color: #eafff2 !important;
+  border: 2px solid #022330 !important;
+}
+body[data-theme="tv"] .play-modal .play-actions .btn:hover,
+body[data-theme="tv"] .play-modal .play-actions a:hover {
+  background: #0a5069 !important;
+  color: #ffffff !important;
+}
+
+/* вердикт проверки запуска */
+.verdict { margin: 10px 0; padding: 10px 12px; border-radius: 8px; border: 2px solid; font-size: 14px; }
+.verdict.warn { border-color: #b4552c; background: rgba(120, 50, 20, .35); color: #ffe3d2; }
+.verdict.pending { border-color: #8a7a2c; background: rgba(100, 85, 20, .3); color: #fff3c9; }
+.verdict .meta { display: block; margin-top: 4px; opacity: .8; }
+.badge-exe {
+  display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 5px;
+  font-size: 10px; letter-spacing: .04em; text-transform: uppercase;
+  background: #5a2a14; color: #ffd9b8; border: 1px solid #8a4a24;
+}
+
+/* кнопки карточки — в один ряд */
+body[data-theme="tv"] .card .actions,
+body[data-theme="tv"] .grid .card .actions {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+}
+body[data-theme="tv"] .card .actions .btn {
+  width: auto !important;
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  padding: 8px 6px !important;
+  font-size: 12px !important;
+  letter-spacing: .03em !important;
+  white-space: nowrap !important;
+}
+
+
+/* =================================================================== */
+/*  Модалка запуска игры — импровизированный ламповый телевизор        */
+/* =================================================================== */
+
+body[data-theme="tv"] .play-backdrop {
+  background:
+    radial-gradient(70% 60% at 50% 42%, rgba(120, 78, 36, .38), rgba(8, 5, 3, .96) 72%),
+    #060402 !important;
+  backdrop-filter: blur(5px);
+}
+
+body[data-theme="tv"] .play-window {
+  width: min(1180px, 95vw) !important;
+  height: min(86vh, 860px) !important;
+  padding: 12px 16px 10px !important;
+  gap: 10px !important;
+  border: 14px solid #150d07 !important;
+  border-radius: 28px !important;
+  background:
+    radial-gradient(130% 100% at 50% 0%, #7c5a38 0%, #523a24 26%, #2e1f13 62%, #180f08 100%) !important;
+  box-shadow:
+    inset 0 0 0 3px #97754c,
+    inset 0 0 0 7px #2a1b0f,
+    inset 0 2px 0 rgba(255, 228, 180, .25),
+    0 34px 90px rgba(0, 0, 0, .9),
+    0 0 120px rgba(255, 170, 80, .10) !important;
+  animation: tv-switch-on .45s ease-out both;
+}
+
+@keyframes tv-switch-on {
+  0%   { transform: scale(.94); opacity: 0; filter: brightness(2.4); }
+  55%  { transform: scale(1.005); opacity: 1; filter: brightness(1.15); }
+  100% { transform: scale(1); opacity: 1; filter: brightness(1); }
+}
+
+/* верхняя панель корпуса */
+body[data-theme="tv"] .tv-set-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 4px 6px;
+  border-bottom: 2px solid rgba(0, 0, 0, .45);
+  box-shadow: 0 1px 0 rgba(255, 220, 170, .12);
+}
+
+body[data-theme="tv"] .tv-set-brand {
+  font-family: var(--display, inherit);
+  font-size: 12px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: #f3d38b;
+  padding: 3px 9px;
+  border: 1px solid #8a6a3a;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #2a1c10, #180f08);
+  box-shadow: inset 0 1px 0 rgba(255, 220, 160, .25);
+}
+
+body[data-theme="tv"] .tv-set-model {
+  font-size: 10px;
+  letter-spacing: .16em;
+  color: #b99a6c;
+  text-transform: uppercase;
+}
+
+body[data-theme="tv"] .play-actions { margin-left: auto; }
+
+/* экран в корпусе */
+body[data-theme="tv"] .tv-set-screen {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 10px;
+  border-radius: 26px / 30px;
+  background: linear-gradient(180deg, #0d0905, #050302);
+  box-shadow:
+    inset 0 0 0 5px #1c1209,
+    inset 0 0 0 8px #33210f,
+    inset 0 0 40px rgba(0, 0, 0, .95);
+}
+
+body[data-theme="tv"] .play-dos.play-dos {
+  position: relative;
+  height: 100% !important;
+  min-height: 0 !important;
+  border-radius: 16px / 20px !important;
+  overflow: hidden;
+  background: #000 !important;
+  box-shadow: inset 0 0 70px rgba(0, 0, 0, .95);
+}
+
+/* стекло кинескопа: блики, виньетка, строчная развёртка */
+body[data-theme="tv"] .tv-glass {
+  position: absolute;
+  inset: 10px;
+  border-radius: 16px / 20px;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(255, 255, 255, .14), transparent 46%),
+    radial-gradient(150% 130% at 50% 50%, transparent 52%, rgba(0, 0, 0, .55) 100%),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, .16) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply;
+  opacity: .9;
+  animation: crt-flicker 5.5s steps(60) infinite;
+}
+
+body[data-theme="tv"] .tv-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(115deg, rgba(255, 255, 255, .09) 0%, transparent 26%,
+              transparent 74%, rgba(255, 255, 255, .05) 100%);
+  mix-blend-mode: screen;
+  opacity: .55;
+}
+
+@keyframes crt-flicker {
+  0%, 100% { opacity: .9; }
+  48% { opacity: .86; }
+  50% { opacity: .94; }
+  52% { opacity: .87; }
+}
+
+/* нижняя панель: динамик, ручки, лампочка */
+body[data-theme="tv"] .tv-set-bottom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 4px 0;
+}
+
+body[data-theme="tv"] .tv-speaker {
+  width: 140px;
+  height: 26px;
+  border-radius: 8px;
+  background:
+    repeating-linear-gradient(90deg, #0d0905 0 2px, #2a1c10 2px 4px);
+  box-shadow: inset 0 0 0 2px #120b06, inset 0 2px 6px rgba(0, 0, 0, .8);
+  flex: 0 0 auto;
+}
+
+body[data-theme="tv"] .tv-set-title {
+  font-family: var(--display, inherit);
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #f0cf8b;
+  text-shadow: 0 1px 0 #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 26%;
+}
+
+body[data-theme="tv"] .tv-knobs {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+body[data-theme="tv"] .tv-knob {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 30%, #6a523a 0%, #2a1c10 55%, #0d0804 100%);
+  box-shadow:
+    inset 0 0 0 3px #0b0704,
+    inset 0 2px 4px rgba(255, 230, 190, .18),
+    0 2px 4px rgba(0, 0, 0, .7);
+  position: relative;
+}
+
+body[data-theme="tv"] .tv-knob::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 4px;
+  width: 2px;
+  height: 9px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: #e8c98d;
+  box-shadow: 0 0 4px rgba(255, 210, 140, .5);
+}
+
+body[data-theme="tv"] .tv-knob--channel::after { transform: rotate(32deg); transform-origin: 1px 11px; }
+body[data-theme="tv"] .tv-knob--volume::after { transform: rotate(-24deg); transform-origin: 1px 11px; }
+
+body[data-theme="tv"] .tv-set-power {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+body[data-theme="tv"] .tv-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #b6ffb0, #2fd35a 55%, #0c5c1e 100%);
+  box-shadow: 0 0 10px rgba(70, 255, 120, .8), inset 0 0 3px #fff;
+}
+
+body[data-theme="tv"] .tv-led-label {
+  font-size: 8px;
+  letter-spacing: .18em;
+  color: #9d8258;
+  text-transform: uppercase;
+}
+
+body[data-theme="tv"] .tv-set-bottom .player-status {
+  margin: 0;
+  padding: 4px 8px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #c8ab77 !important;
+  font-size: 11px !important;
+  letter-spacing: .06em;
+  max-width: 32%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body[data-theme="tv"] .tv-set-bottom .player-status.is-ok { color: #8ef0a2 !important; }
+body[data-theme="tv"] .tv-set-bottom .player-status.is-error { color: #ff9d8a !important; }
+
+/* кнопки на корпусе — как физические клавиши */
+body[data-theme="tv"] .tv-set-top .play-actions .btn,
+body[data-theme="tv"] .tv-set-top .play-actions a {
+  background: linear-gradient(180deg, #4c3722, #241708) !important;
+  color: #f2d5a0 !important;
+  border: 2px solid #120b06 !important;
+  border-radius: 7px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 225, 175, .3), 0 2px 3px rgba(0, 0, 0, .6) !important;
+  font-size: 11px !important;
+  padding: 6px 10px !important;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+body[data-theme="tv"] .tv-set-top .play-actions .btn:hover,
+body[data-theme="tv"] .tv-set-top .play-actions a:hover {
+  background: linear-gradient(180deg, #63482c, #2f1f0e) !important;
+  color: #fff0cf !important;
+}
+
+body[data-theme="tv"] .tv-set-screen .dos-start {
+  background: radial-gradient(circle at 50% 45%, rgba(20, 30, 20, .55), rgba(0, 0, 0, .92));
+}
+
+@media (max-width: 760px) {
+  body[data-theme="tv"] .tv-set-model { display: none; }
+  body[data-theme="tv"] .tv-speaker { width: 70px; }
+  body[data-theme="tv"] .tv-set-title { display: none; }
+  body[data-theme="tv"] .play-window { padding: 8px 10px 6px !important; border-width: 10px !important; }
+}
+
+body[data-theme="tv"] .tv-set-power {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin-left: 4px;
+}
+body[data-theme="tv"] .tv-set-screen .dos-start .btn.primary {
+  background: linear-gradient(180deg, #f2cd77, #b98a32) !important;
+  color: #1b1004 !important;
+  border: 2px solid #5c3f16 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 246, 214, .7), 0 3px 8px rgba(0, 0, 0, .6) !important;
+  letter-spacing: .06em;
+}
+body[data-theme="tv"] .tv-set-screen .dos-start .btn.primary:hover {
+  background: linear-gradient(180deg, #ffdd8c, #c99a3c) !important;
+}
+body[data-theme="tv"] .tv-set-screen .dos-start .meta {
+  color: #dcbf8d !important;
+  letter-spacing: .06em;
+}
+
+/* общая «комнатная» атмосфера лампового ТВ */
+body[data-theme="tv"]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  background: radial-gradient(78% 62% at 50% 46%, transparent 56%, rgba(0, 0, 0, .42) 100%);
+  mix-blend-mode: multiply;
+}

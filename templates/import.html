@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Импорт из папки — {{ site.title }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <h1>Импорт из папки</h1>
+  <p class="sub">Архивы, которые уже лежат на диске: <code>{{ folder }}</code></p>
+</section>
+
+{% if not files %}
+  <div class="empty">
+    <div class="empty-icon">📂</div>
+    <h2>Архивов не видно</h2>
+    <p>Положите в эту папку файлы <code>.zip</code>, <code>.rar</code>, <code>.7z</code> или <code>.jsdos</code>
+       и обновите страницу. Можно указать другую папку переменной <code>RETRO_GAMES_DIR</code>.</p>
+  </div>
+{% else %}
+<div class="panel">
+  <form method="post" action="{{ url_for('import_all') }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <button class="btn primary big" type="submit">Импортировать все новые</button>
+    <span class="meta" style="margin-left:10px">
+      архивы больше 200 МБ пропускаются — их лучше импортировать по одному
+    </span>
+  </form>
+
+  <form method="post" action="{{ url_for('import_delete_imported') }}"
+        onsubmit="return confirm('Удалить с диска все архивы, которые уже импортированы? Игры в библиотеке останутся.')">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <button class="btn small ghost" type="submit">Удалить импортированные архивы</button>
+  </form>
+</div>
+
+<ul class="import-list">
+  {% for file in files %}
+  <li class="import-item {% if file.imported %}is-imported{% endif %}">
+    <div class="import-info">
+      <strong>{{ file.name }}</strong>
+      <span class="meta">
+        {{ file.size_human }} · {{ file.mtime }}
+        {% if file.big %} · <span class="tag warn">большой</span>{% endif %}
+      </span>
+    </div>
+    <div class="import-actions">
+      {% if file.imported %}
+        <span class="tag">уже в библиотеке</span>
+      {% else %}
+        <form method="post" action="{{ url_for('import_one', name=file.name) }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <button class="btn small primary" type="submit">Импортировать</button>
+        </form>
+      {% endif %}
+      <form method="post" action="{{ url_for('import_delete') }}"
+            onsubmit="return confirm('Удалить архив «{{ file.name }}» с диска? Уже добавленные игры останутся в библиотеке.')">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <input type="hidden" name="name" value="{{ file.name }}">
+        <button class="btn small ghost" type="submit">Удалить</button>
+      </form>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+<section class="hint">
+  <h2>Что будет дальше</h2>
+  <ul>
+    <li>Архив распакуется в библиотеку, и откроется страница выбора запускаемого файла.</li>
+    <li>Windows-версии игр (например, Doom95) система помечает — в DOSBox они не пойдут.</li>
+    <li>Папку можно указать при запуске: <code>python app.py</code> + <code>RETRO_GAMES_DIR=D:\games</code>.</li>
+  </ul>
+</section>
+{% endblock %}
